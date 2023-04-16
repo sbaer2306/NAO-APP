@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import '../ui_elements/nao_background.dart';
+import 'package:provider/provider.dart';
+
+import 'package:nao_app/providers/robot_provider.dart';
+import 'package:nao_app/ui_elements/nao_background.dart';
+import 'package:nao_app/pages/create_connect_view.dart';
+import 'package:nao_app/pages/start_view.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -11,33 +16,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int naoCounter = 0;
-  var naoConnectings = <IPField>[];
-  
-  @override
-  void initState(){
-    super.initState();
-    naoConnectings.add(IPField(index: naoCounter));
-  }
-
-  void incrementCounter() {
-    setState( () {
-      naoConnectings.add(IPField(index: naoCounter));
-      naoCounter++;
-    });
-  }
-
-  void decrementCounter() {
-    setState( () {
-      naoConnectings.removeAt(naoCounter);
-      naoCounter--;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    final robotProvider = Provider.of<RobotProvider>(context, listen: false);
+
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(217, 217, 217, 0),
         centerTitle: true,
@@ -51,83 +34,118 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         decoration: connectNAO,
         alignment: Alignment.center,
-        child: ListView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const Center(
-              child: Padding(
-                  padding: EdgeInsets.only(top: 40, bottom: 50),
-                  child: Text("Stelle eine Verbindung zu den NAO's her",
-                      style: TextStyle(
-                          color: Color(0xff0d2481),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline))),
+            robotProvider.items.isEmpty
+                ? const Text(
+                    "Stelle eine Verbinung zu einem NAO her!",
+                    style: TextStyle(
+                      color: Color(0xff0d2481),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                : const Text(
+                    "Verbundene NAO's: ",
+                    style: TextStyle(
+                      color: Color(0xff0d2481),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+            const SizedBox(
+              height: 20,
             ),
-            for (var connecting in naoConnectings) connecting,
-            if (naoCounter < 6)
+            ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: robotProvider.items.length,
+                itemBuilder: (context, index) {
+                  final robot = robotProvider.items[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xffd9d9d9),
+                        border: Border.all(
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove),
+                            iconSize: 40,
+                            color: const Color(0xff0d2481),
+                            onPressed: () {
+                              setState(() {
+                                robotProvider.removeRobot(robot);
+                              });
+                            },
+                          ),
+                          Text(robot.ipAdress,
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff0d2481))),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(
+                              Icons.check,
+                              color: Color(0xff3bccff),
+                              size: 30,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+            const SizedBox(
+              height: 20,
+            ),
+            if (robotProvider.items.length < 6)
               FloatingActionButton(
-                onPressed: incrementCounter,
-                backgroundColor: const Color(0xffd9d9d9),
-                child: const Icon(Icons.add),
-              )
+                heroTag: 'add_robot_btn',
+                onPressed: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CreateConnectPage()))
+                      .then(
+                    (value) => setState(() {}),
+                  );
+                },
+                backgroundColor: const Color(0xff0d2481),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+              ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: decrementCounter,
-        tooltip: 'Increment',
-        backgroundColor: const Color(0xffd9d9d9),
-        child: const Icon(Icons.arrow_forward),
-      ),
-    ));
-  }
-}
-
-class IPField extends StatefulWidget {
-  final index;
-
-  const IPField({super.key, required this.index});
-
-  @override
-  State<IPField> createState() => _IPFieldState();
-}
-
-class _IPFieldState extends State<IPField> {
-  final TextEditingController _controller = TextEditingController();
-
-  @override 
-  void initState() {
-    super.initState();
-    _controller.text = '192.168.172.';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20, left: 60, right: 60),
-      child: Row(
-        children: <Widget>[
-          
-          Flexible(
-            child: TextField(
-              keyboardType: TextInputType.number,
-              controller: _controller,
-              style: const TextStyle(
-                color: Color(0xff0d2481),
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              decoration: const InputDecoration(
-                  filled: true,
-                  border: OutlineInputBorder(),
-                  //hintText: 'Gib hier die IP-Adresse ein',
-                  labelText: 'IP-Adresse',
-                  labelStyle: TextStyle(color: Color(0xff0d2481)),
-                  fillColor: Color(0xffd9d9d9)),
+      floatingActionButton: robotProvider.items.isEmpty
+          ? const Text(
+              "Um fortzuführen bitte zuerst eine Verbindung herstellen...",
+              style: TextStyle(fontWeight: FontWeight.bold))
+          : FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const StartView(
+                              title: "NAO-App",
+                            )));
+              },
+              backgroundColor: const Color(0xffd9d9d9),
+              child: const Icon(Icons.arrow_forward),
             ),
-          ),
-        ],
-      ),
     );
   }
 }

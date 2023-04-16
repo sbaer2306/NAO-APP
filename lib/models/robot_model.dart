@@ -1,4 +1,5 @@
 import 'dart:convert';
+//import 'package:http/http.dart' as http;
 
 class RobotModel {
   final String ipAdress;
@@ -7,6 +8,9 @@ class RobotModel {
     required this.ipAdress,
   });
 
+  bool connect(bool connect) {
+    return connect;
+  }
 
   RobotModel copyWith({
     String? ipAdress,
@@ -30,7 +34,8 @@ class RobotModel {
 
   String toJson() => json.encode(toMap());
 
-  factory RobotModel.fromJson(String source) => RobotModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory RobotModel.fromJson(String source) =>
+      RobotModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'RobotModel(IP: $ipAdress)';
@@ -38,9 +43,8 @@ class RobotModel {
   @override
   bool operator ==(covariant RobotModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.ipAdress == ipAdress;
+
+    return other.ipAdress == ipAdress;
   }
 
   @override

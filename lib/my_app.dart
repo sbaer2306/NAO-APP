@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'pages/connecting_view.dart';
-import 'pages/start_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -8,11 +7,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'NAO-App',
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
-      home: const MyHomePage(title: "NAO-App"),
+      home: const SafeArea(child: MyHomePage(title: "NAO-App")),
     );
   }
 }
