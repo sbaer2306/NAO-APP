@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/connecting_view.dart';
+import 'pages/start_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
