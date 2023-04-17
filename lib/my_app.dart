@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:nao_app/pages/connecting_view.dart';
 import 'pages/home_page.dart';
+import 'pages/start_view.dart';
 
 class MyAppState extends State<MyApp> {
   int selectedPageIndex = 0;
 
   final List<Widget> pages = [
-    const MyHomePage(title: "NAO-App"),
-    const HomePage(),
-    const Text("foobar"),
+    const Center(child: StartView(title: "Startview")),
+    const Center(child: ConnectView(title: "NAO-App")),
+    const Center(child: ConfigView()),
   ];
 
-  void onTap(int i) {
+  void setSelectedPage(int i) {
     setState(() {
       selectedPageIndex = i;
     });
@@ -33,7 +34,15 @@ class MyAppState extends State<MyApp> {
         home: SafeArea(
             child: Scaffold(
                 appBar: AppBar(
-                  title: const Text("Nao App"),
+                  title: Center(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text("NAO "),
+                      Icon(Icons.smart_toy_outlined),
+                      Text(" APP")
+                    ],
+                  )),
                 ),
                 body: pages.elementAt(selectedPageIndex),
                 bottomNavigationBar: BottomNavigationBar(
@@ -41,12 +50,12 @@ class MyAppState extends State<MyApp> {
                     BottomNavigationBarItem(
                         icon: Icon(Icons.home), label: "Home"),
                     BottomNavigationBarItem(
-                        icon: Icon(Icons.settings), label: "Settings"),
+                        icon: Icon(Icons.sensors), label: "Connect"),
                     BottomNavigationBarItem(
-                        icon: Icon(Icons.lightbulb), label: "Damn"),
+                        icon: Icon(Icons.settings), label: "Configure"),
                   ],
                   currentIndex: selectedPageIndex,
-                  onTap: onTap,
+                  onTap: setSelectedPage,
                 ))));
   }
 }

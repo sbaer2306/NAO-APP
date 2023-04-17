@@ -6,16 +6,16 @@ import 'package:nao_app/ui_elements/nao_background.dart';
 import 'package:nao_app/pages/create_connect_view.dart';
 import 'package:nao_app/pages/start_view.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class ConnectView extends StatefulWidget {
+  const ConnectView({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<ConnectView> createState() => _ConnectViewState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ConnectViewState extends State<ConnectView> {
   @override
   Widget build(BuildContext context) {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
