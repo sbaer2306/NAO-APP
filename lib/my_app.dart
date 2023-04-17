@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nao_app/pages/connecting_view.dart';
-import 'pages/home_page.dart';
+import 'pages/config_view.dart';
 import 'pages/start_view.dart';
 
 class MyAppState extends State<MyApp> {
