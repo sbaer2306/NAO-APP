@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nao_app/pages/connecting_view.dart';
 import 'pages/home_page.dart';
 
 class MyAppState extends State<MyApp> {
@@ -24,28 +25,29 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'NAO-App',
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-      ),
-      home: const SafeArea(child: MyHomePage(title: "NAO-App")),
-        home: Scaffold(
-            appBar: AppBar(
-              title: const Text("Nao App"),
-            ),
-            body: pages.elementAt(selectedPageIndex),
-            bottomNavigationBar: BottomNavigationBar(
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.settings), label: "Settings"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.lightbulb), label: "Damn"),
-              ],
-              currentIndex: selectedPageIndex,
-              onTap: onTap,
-            )));
+        debugShowCheckedModeBanner: false,
+        title: 'NAO-App',
+        theme: ThemeData(
+          primarySwatch: Colors.grey,
+        ),
+        home: SafeArea(
+            child: Scaffold(
+                appBar: AppBar(
+                  title: const Text("Nao App"),
+                ),
+                body: pages.elementAt(selectedPageIndex),
+                bottomNavigationBar: BottomNavigationBar(
+                  items: const [
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.home), label: "Home"),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.settings), label: "Settings"),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.lightbulb), label: "Damn"),
+                  ],
+                  currentIndex: selectedPageIndex,
+                  onTap: onTap,
+                ))));
   }
 }
 
