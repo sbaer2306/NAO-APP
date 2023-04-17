@@ -1,5 +1,6 @@
 import 'dart:convert';
-//import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 class RobotModel {
   final String ipAdress;
@@ -8,8 +9,18 @@ class RobotModel {
     required this.ipAdress,
   });
 
-  bool connect(bool connect) {
-    return connect;
+  Future<int> connect() async {
+    var url = Uri.https('httpbin.org', '/post');
+    var response = await http.post(url, body: {'name': 'test'});
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Verbindung erfolgreich");
+      }
+    }
+
+    return statusCode;
   }
 
   RobotModel copyWith({

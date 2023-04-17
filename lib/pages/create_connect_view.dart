@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:nao_app/models/robot_model.dart';
 import 'package:nao_app/providers/robot_provider.dart';
 import 'package:provider/provider.dart';
 import '../ui_elements/nao_background.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import '../ui_elements/connecting_alert_dialog.dart';
 
 class CreateConnectPage extends StatefulWidget {
   const CreateConnectPage({super.key});
@@ -11,18 +14,37 @@ class CreateConnectPage extends StatefulWidget {
   State<CreateConnectPage> createState() => _CreateConnectPageState();
 }
 
-class _CreateConnectPageState extends State<CreateConnectPage> {
+class _CreateConnectPageState extends State<CreateConnectPage>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _ipAddressController = TextEditingController();
+
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _ipAddressController.text = '192.168.';
+    _ipAddressController.text = '192.168.171.';
+  }
+
+  Future<int> connectToNao(RobotModel robot) async {
+    setState(() {
+      _isLoading = true;
+    });
+    return robot.connect();
   }
 
   @override
   Widget build(BuildContext context) {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
+
+    void showAlertDialog(int code) {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return ConnectingDialog(code: code, ip: _ipAddressController.text);
+          });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -64,21 +86,37 @@ class _CreateConnectPageState extends State<CreateConnectPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                ElevatedButton(
-                    style: const ButtonStyle(
-                        backgroundColor:
-                            MaterialStatePropertyAll<Color>(Color(0xff3bccff))),
-                    onPressed: () {
-                      final newRobot =
-                          RobotModel(ipAdress: _ipAddressController.text);
-                      if (newRobot.connect(true)) {
-                        robotProvider.addRobot(newRobot);
-                      }
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      "verbinden",
-                    )),
+                _isLoading
+                    ? Column(
+                        children: [
+                          const Text("Stelle Verbindung her..."),
+                          LoadingAnimationWidget.staggeredDotsWave(
+                            color: const Color(0xff0d2481),
+                            size: 100,
+                          )
+                        ],
+                      )
+                    : ElevatedButton(
+                        style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll<Color>(
+                                Color(0xff3bccff))),
+                        onPressed: () async {
+                          final newRobot =
+                              RobotModel(ipAdress: _ipAddressController.text);
+                          connectToNao(newRobot).then((success) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            showAlertDialog(success);
+                            if (success == 200) {
+                              robotProvider.addRobot(newRobot);
+                              //Navigator.pop(context);
+                            }
+                          });
+                        },
+                        child: const Text(
+                          "verbinden",
+                        )),
               ]),
         ),
       ),
