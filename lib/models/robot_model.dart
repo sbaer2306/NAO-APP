@@ -10,12 +10,17 @@ class RobotModel {
   });
 
   Future<int> connect() async {
+    //Test Verbindung
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'name': 'test'});
+
     //TODO:PORT in Maske
-    var port= '8080';
-    var url = Uri.http(ipAdress+':'+port, '/api/connect');
-    final headers = {"Content-type": "application/json"};
-    var json = '{"ip_address": "${ipAdress}", "port": "${port}"}';
-    var response = await http.post(url, headers: headers, body: json);
+    var port = '8080';
+    //var url = Uri.http('$ipAdress:$port', '/api/connect');
+    //final headers = {"Content-type": "application/json"};
+    var json = '{"ip_address": "$ipAdress", "port": "$port"}';
+    //var response = await http.post(url, headers: headers, body: json);
+
     var statusCode = response.statusCode;
     if (kDebugMode) {
       print(statusCode);
@@ -25,7 +30,6 @@ class RobotModel {
     }
     return statusCode;
   }
-
 
   RobotModel copyWith({
     String? ipAdress,
