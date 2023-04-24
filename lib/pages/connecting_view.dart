@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:nao_app/providers/robot_provider.dart';
 import 'package:nao_app/ui_elements/nao_background.dart';
 import 'package:nao_app/pages/create_connect_view.dart';
-import 'package:nao_app/pages/start_view.dart';
+
+import 'home_view.dart';
 
 class ConnectView extends StatefulWidget {
   const ConnectView({super.key, required this.title});
@@ -139,7 +140,7 @@ class _ConnectViewState extends State<ConnectView> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const StartView(
+                        builder: (context) => const HomeView(
                               title: "NAO-App",
                             )));
               },
