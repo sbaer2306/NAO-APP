@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nao_app/ui_elements/info_card.dart';
 
+// TODO: Add data bindings
+
 class ConfigItem extends StatelessWidget {
   const ConfigItem({Key? key, required this.children}) : super(key: key);
 
@@ -52,60 +54,10 @@ class ConfigView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const InfoCard(title: "foo", description: "bar"),
-        const ConfigTitle(title: "Name"),
-        const ConfigItem(children: [
-          Expanded(
-            child: TextField(
-              decoration:
-                  InputDecoration(hintText: "Enter the name for the NAO"),
-            ),
-          ),
-        ]),
-        const ConfigTitle(title: "Network Adress"),
-        const ConfigItem(children: [
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(hintText: "Enter the IP"),
-            ),
-          ),
-        ]),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    ConfigTitle(title: "Language"),
-                    ConfigItem(children: [
-                      DropdownMenu(dropdownMenuEntries: [
-                        DropdownMenuEntry(value: "german", label: "German")
-                      ])
-                    ])
-                  ]),
-            ),
-            Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    ConfigTitle(title: "Voice"),
-                    ConfigItem(
-                        children: [DropdownMenu(dropdownMenuEntries: [])])
-                  ]),
-            )
-          ],
-        ),
-        const ConfigTitle(title: "Volume"),
-        const ConfigItem(
-          children: [
-            Icon(Icons.volume_mute),
-            Expanded(
-              child: Slider(value: 0, onChanged: null),
-            ),
-            Icon(Icons.volume_up),
-          ],
-        ),
+        const InfoCard(
+            title: "Configure your NAO",
+            description:
+                "Configure your NAO to your needs and preferences. Feel free to play around with the settings and find the best configuration for you."),
         Row(children: const [
           Expanded(
             child: ConfigTitle(title: "Wifi"),
@@ -138,6 +90,94 @@ class ConfigView extends StatelessWidget {
               ),
             ),
             SizedBox(width: 8.0),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+          child: Divider(
+            color: Colors.grey.shade400,
+          ),
+        ),
+        const ConfigTitle(title: "Name"),
+        const ConfigItem(children: [
+          Expanded(
+            child: TextField(
+              decoration:
+                  InputDecoration(hintText: "Enter the name for the NAO"),
+            ),
+          ),
+        ]),
+        const ConfigTitle(title: "Network Adress"),
+        const ConfigItem(children: [
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(hintText: "Enter the IP"),
+            ),
+          ),
+        ]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ConfigTitle(title: "Language"),
+                    ConfigItem(children: [
+                      Expanded(
+                        child: DropdownButton(items: const [
+                          DropdownMenuItem(
+                            value: "english",
+                            child: Text("English"),
+                          ),
+                          DropdownMenuItem(
+                            value: "german",
+                            child: Text("German"),
+                          ),
+                          DropdownMenuItem(
+                            value: "spanish",
+                            child: Text("Spanish"),
+                          ),
+                          DropdownMenuItem(
+                            value: "chineese",
+                            child: Text("Chineese"),
+                          ),
+                        ], onChanged: null, value: "english"),
+                      )
+                    ])
+                  ]),
+            ),
+            Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const ConfigTitle(title: "Voice"),
+                    ConfigItem(children: [
+                      Expanded(
+                        child: DropdownButton(items: const [
+                          DropdownMenuItem(
+                            value: "male",
+                            child: Text("Male"),
+                          ),
+                          DropdownMenuItem(
+                            value: "female",
+                            child: Text("Female"),
+                          ),
+                        ], onChanged: null, value: "male"),
+                      )
+                    ]),
+                  ]),
+            )
+          ],
+        ),
+        const ConfigTitle(title: "Volume"),
+        const ConfigItem(
+          children: [
+            Icon(Icons.volume_mute),
+            Expanded(
+              child: Slider(value: 0, onChanged: null),
+            ),
+            Icon(Icons.volume_up),
           ],
         ),
         const SizedBox(
