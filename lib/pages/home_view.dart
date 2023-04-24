@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nao_app/pages/movement_view.dart';
 import 'package:nao_app/pages/speaker_view.dart';
+import 'package:nao_app/ui_elements/nao_list_drawer.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key, required this.title});
@@ -19,6 +20,7 @@ class _HomeViewState extends State<HomeView> {
     return DefaultTabController(
         length: 2,
         child: Scaffold(
+            drawer: const NaoListDrawer(),
             appBar: AppBar(
               actions: <Widget>[
                 IconButton(
