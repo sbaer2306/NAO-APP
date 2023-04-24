@@ -11,12 +11,17 @@ dependencies:
     sdk: flutter
 
   provider: ^6.0.5
-  http: any
+  http: ^0.13.5
+  video_player: ^2.6.1
+  loading_animation_widget: ^1.2.0+4
+  animated_check: ^1.0.5
+  mockito: ^5.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  test: ^1.22.0
 
 flutter:
   uses-material-design: true
