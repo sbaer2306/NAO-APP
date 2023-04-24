@@ -47,6 +47,9 @@ class ConfigTitle extends StatelessWidget {
 class ConfigView extends StatelessWidget {
   const ConfigView({Key? key}) : super(key: key);
 
+  void nilHandlerStr(String? _) {}
+  void nilHandlerDbl(double? _) {}
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -142,7 +145,7 @@ class ConfigView extends StatelessWidget {
                             value: "chineese",
                             child: Text("Chineese"),
                           ),
-                        ], onChanged: null, value: "english"),
+                        ], onChanged: nilHandlerStr, value: "english"),
                       )
                     ])
                   ]),
@@ -163,7 +166,7 @@ class ConfigView extends StatelessWidget {
                             value: "female",
                             child: Text("Female"),
                           ),
-                        ], onChanged: null, value: "male"),
+                        ], onChanged: nilHandlerStr, value: "male"),
                       )
                     ]),
                   ]),
@@ -171,13 +174,13 @@ class ConfigView extends StatelessWidget {
           ],
         ),
         const ConfigTitle(title: "Volume"),
-        const ConfigItem(
+        ConfigItem(
           children: [
-            Icon(Icons.volume_mute),
+            const Icon(Icons.volume_mute),
             Expanded(
-              child: Slider(value: 0, onChanged: null),
+              child: Slider(value: 0, onChanged: nilHandlerDbl),
             ),
-            Icon(Icons.volume_up),
+            const Icon(Icons.volume_up),
           ],
         ),
         const SizedBox(
