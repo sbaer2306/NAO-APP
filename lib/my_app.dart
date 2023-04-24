@@ -29,7 +29,7 @@ class MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'NAO-App',
         theme: ThemeData(
-          primarySwatch: Colors.grey,
+          primarySwatch: Colors.indigo,
         ),
         home: SafeArea(
             child: Scaffold(
