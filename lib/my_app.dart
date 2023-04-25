@@ -15,7 +15,8 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'NAO-App',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        primarySwatch:
+            Colors.deepPurple, //shade 50 cannot be used due to wrong Type
       ),
       home: const SafeArea(
         child: MainScaffold(),
