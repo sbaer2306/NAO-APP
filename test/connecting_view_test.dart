@@ -53,7 +53,7 @@ void main() {
       builder: (BuildContext context) {
         final robotProvider =
             Provider.of<RobotProvider>(context, listen: false);
-        robotProvider.addRobot(RobotModel(ipAdress: "123"));
+        robotProvider.addRobot(RobotModel(ipAddress: "123"));
         expect(find.text("Verbundene NAO's: "), findsOneWidget);
 
         expect(find.text("123"), findsOneWidget);
@@ -70,7 +70,7 @@ void main() {
       builder: (BuildContext context) {
         final robotProvider =
             Provider.of<RobotProvider>(context, listen: false);
-        final robotModel = RobotModel(ipAdress: "123");
+        final robotModel = RobotModel(ipAddress: "123");
         robotProvider.addRobot(robotModel);
         expect(find.text("Verbundene NAO's: "), findsOneWidget);
         expect(find.text("123"), findsOneWidget);

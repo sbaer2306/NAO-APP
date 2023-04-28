@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nao_app/models/robot_model.dart';
 import 'package:nao_app/providers/robot_provider.dart';
 import 'package:provider/provider.dart';
-import '../ui_elements/nao_background.dart';
+import '../ui_elements/info_card.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../ui_elements/connecting_alert_dialog.dart';
 
@@ -16,6 +16,7 @@ class CreateConnectPage extends StatefulWidget {
 
 class _CreateConnectPageState extends State<CreateConnectPage>
     with SingleTickerProviderStateMixin {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ipAddressController = TextEditingController();
 
   bool _isLoading = false;
@@ -24,13 +25,6 @@ class _CreateConnectPageState extends State<CreateConnectPage>
   void initState() {
     super.initState();
     _ipAddressController.text = '192.168.171.';
-  }
-
-  Future<int> connectToNao(RobotModel robot) async {
-    setState(() {
-      _isLoading = true;
-    });
-    return robot.connect();
   }
 
   @override
@@ -46,63 +40,80 @@ class _CreateConnectPageState extends State<CreateConnectPage>
           });
     }
 
+    Future<int> connectToNao(RobotModel robot) async {
+      setState(() {
+        _isLoading = true;
+      });
+      return robot.connect();
+    }
+
+    //TODO Einbetten in MainScaffold
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(217, 217, 217, 0),
-        toolbarHeight: 80,
-        title: const Text("Verbinung herstellen",
-            style: TextStyle(
+        appBar: AppBar(
+          backgroundColor: const Color(0xfffef7ff),
+          centerTitle: true,
+          toolbarHeight: 80,
+          title: const Text("Verbindung zum NAO herstellen",
+              style: TextStyle(
                 color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold)),
-      ),
-      body: Container(
-        decoration: connectNAO,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                TextField(
-                  autofocus: true,
-                  keyboardType: TextInputType.number,
-                  controller: _ipAddressController,
-                  style: const TextStyle(
-                    color: Color(0xff0d2481),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      hintText: 'Gib hier die IP-Adresse ein',
-                      labelText: 'IP-Adresse',
-                      helperText: "Gib hier die IP-Adresse vom NAO ein",
-                      labelStyle: const TextStyle(color: Color(0xff0d2481)),
-                      fillColor: const Color(0xffd9d9d9)),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                _isLoading
-                    ? Column(
-                        children: [
-                          const Text("Stelle Verbindung her..."),
-                          LoadingAnimationWidget.staggeredDotsWave(
-                            color: const Color(0xff0d2481),
-                            size: 100,
-                          )
-                        ],
+                fontSize: 25,
+              )),
+        ),
+        body: Column(
+          children: [
+            const InfoCard(
+                title: "Verbinde deinen NAO",
+                description:
+                    "Mit Eingabe der IP-Adresse vom NAO kannst du eine Verbindung herstellen. \nOptional kannst du deinem NAO einen Namen geben"),
+            const Headline(title: "Name"),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                    filled: true,
+                    hintText: "Gib hier deinen gewünschten Namen ein",
+                    fillColor: Color(0xfffef7ff)),
+              ),
+            ),
+            const Headline(title: "IP-Adresse"),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                controller: _ipAddressController,
+                decoration: const InputDecoration(
+                    filled: true,
+                    hintText: "Gib hier die IP-Adresse ein",
+                    fillColor: Color(0xfffef7ff)),
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            _isLoading
+                ? Column(
+                    children: [
+                      const Text("Stelle Verbindung her..."),
+                      LoadingAnimationWidget.staggeredDotsWave(
+                        color: Theme.of(context).primaryColor,
+                        size: 100,
                       )
-                    : ElevatedButton(
-                        style: const ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll<Color>(
-                                Color(0xff3bccff))),
+                    ],
+                  )
+                : SizedBox(
+                    width: 140,
+                    height: 40,
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ))),
                         onPressed: () async {
-                          final newRobot =
-                              RobotModel(ipAdress: _ipAddressController.text);
+                          final newRobot = RobotModel(
+                              ipAddress: _ipAddressController.text,
+                              name: _nameController.text);
                           connectToNao(newRobot).then((success) {
                             setState(() {
                               _isLoading = false;
@@ -114,12 +125,39 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                             }
                           });
                         },
-                        child: const Text(
-                          "verbinden",
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Icon(Icons.add),
+                            Text("verbinden", style: TextStyle(fontSize: 17))
+                          ],
                         )),
-              ]),
+                  ),
+          ],
+        ));
+  }
+}
+
+class Headline extends StatelessWidget {
+  final String title;
+
+  const Headline({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

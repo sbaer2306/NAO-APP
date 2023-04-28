@@ -4,7 +4,7 @@ import 'package:nao_app/models/robot_model.dart';
 
 void main() {
   group('RobotModel Provider', () {
-    final robotModel = RobotModel(ipAdress: "123");
+    final robotModel = RobotModel(ipAddress: "123");
 
     final provider = RobotProvider();
     test('RobotProvider should start with 0 RobotModels', () {

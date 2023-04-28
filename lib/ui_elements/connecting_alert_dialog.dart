@@ -54,7 +54,7 @@ class _ConnectingDialogState extends State<ConnectingDialog>
                   AnimatedCheck(
                     progress: _animation,
                     size: 100,
-                    color: const Color(0xff0d2481),
+                    color: Theme.of(context).primaryColor,
                   ),
                 ],
               )
