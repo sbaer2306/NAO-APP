@@ -53,7 +53,7 @@ class _MainScaffoldState extends State<MainScaffold> {
             title: "HomeView",
           ),
           ConnectView(
-            title: "ConnectView",
+            title: "Verbindungen",
           ),
           ConfigView(),
         ],
