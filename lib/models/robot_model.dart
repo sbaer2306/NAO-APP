@@ -12,23 +12,32 @@ class RobotModel {
 
   Future<int> connect() async {
     //Test Verbindung
-    var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'name': 'test'});
+    /* var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'name': 'test'}); */
 
     //TODO:PORT in Maske
-    //var port = '8080';
-    //var url = Uri.http('$ipAdress:$port', '/api/connect');
-    //final headers = {"Content-type": "application/json"};
-    //var json = '{"ip_address": "$ipAddress", "port": "$port"}';
-    //var response = await http.post(url, headers: headers, body: json);
+    var port = '9559';
+    var url = Uri.http('$ipAddress:8080', '/api/connect');
+    final headers = {"Content-type": "application/json"};
+    var json = '{"ip_address": "$ipAddress", "port": "$port"}';
+    var response; 
+
+    try{
+      response = await http.post(url, headers: headers, body: json);
+    }catch (error){
+      if (kDebugMode) {
+        print(error);
+      }
+    }
+    
 
     var statusCode = response.statusCode;
-    if (kDebugMode) {
+    /* if (kDebugMode) {
       print(statusCode);
       if (statusCode == 200) {
         print("Verbindung erfolgreich");
       }
-    }
+    } */
     return statusCode;
   }
 

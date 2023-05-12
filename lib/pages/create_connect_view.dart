@@ -49,6 +49,7 @@ class _CreateConnectPageState extends State<CreateConnectPage>
 
     //TODO Einbetten in MainScaffold
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: const Color(0xfffef7ff),
           centerTitle: true,
@@ -59,81 +60,89 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                 fontSize: 25,
               )),
         ),
-        body: Column(
-          children: [
-            const InfoCard(
-                title: "Verbinde deinen NAO",
-                description:
-                    "Mit Eingabe der IP-Adresse vom NAO kannst du eine Verbindung herstellen. \nOptional kannst du deinem NAO einen Namen geben"),
-            const Headline(title: "Name"),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                    filled: true,
-                    hintText: "Gib hier deinen gewünschten Namen ein",
-                    fillColor: Color(0xfffef7ff)),
-              ),
-            ),
-            const Headline(title: "IP-Adresse"),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                controller: _ipAddressController,
-                decoration: const InputDecoration(
-                    filled: true,
-                    hintText: "Gib hier die IP-Adresse ein",
-                    fillColor: Color(0xfffef7ff)),
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            _isLoading
-                ? Column(
-                    children: [
-                      const Text("Stelle Verbindung her..."),
-                      LoadingAnimationWidget.staggeredDotsWave(
-                        color: Theme.of(context).primaryColor,
-                        size: 100,
-                      )
-                    ],
-                  )
-                : SizedBox(
-                    width: 140,
-                    height: 40,
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ))),
-                        onPressed: () async {
-                          final newRobot = RobotModel(
-                              ipAddress: _ipAddressController.text,
-                              name: _nameController.text);
-                          connectToNao(newRobot).then((success) {
-                            setState(() {
-                              _isLoading = false;
-                            });
-                            showAlertDialog(success);
-                            if (success == 200) {
-                              robotProvider.addRobot(newRobot);
-                              //Navigator.pop(context);
-                            }
-                          });
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Icon(Icons.add),
-                            Text("verbinden", style: TextStyle(fontSize: 17))
-                          ],
-                        )),
+        body: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+          minWidth: MediaQuery.of(context).size.width,
+          minHeight: MediaQuery.of(context).size.height,
+        ),
+            child: Column(
+              children: [
+                const InfoCard(
+                    title: "Verbinde deinen NAO",
+                    description:
+                        "Mit Eingabe der IP-Adresse vom NAO kannst du eine Verbindung herstellen. \nOptional kannst du deinem NAO einen Namen geben"),
+                const Headline(title: "Name"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                        filled: true,
+                        hintText: "Gib hier deinen gewünschten Namen ein",
+                        fillColor: Color(0xfffef7ff)),
                   ),
-          ],
+                ),
+                const Headline(title: "IP-Adresse"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    controller: _ipAddressController,
+                    decoration: const InputDecoration(
+                        filled: true,
+                        hintText: "Gib hier die IP-Adresse ein",
+                        fillColor: Color(0xfffef7ff)),
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                _isLoading
+                    ? Column(
+                        children: [
+                          const Text("Stelle Verbindung her..."),
+                          LoadingAnimationWidget.staggeredDotsWave(
+                            color: Theme.of(context).primaryColor,
+                            size: 100,
+                          )
+                        ],
+                      )
+                    : SizedBox(
+                        width: 140,
+                        height: 40,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ))),
+                            onPressed: () async {
+                              final newRobot = RobotModel(
+                                  ipAddress: _ipAddressController.text,
+                                  name: _nameController.text);
+                              connectToNao(newRobot).then((success) {
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                                showAlertDialog(success);
+                                if (success == 200) {
+                                  robotProvider.addRobot(newRobot);
+                                  //Navigator.pop(context);
+                                }
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Icon(Icons.add),
+                                Text("verbinden", style: TextStyle(fontSize: 17))
+                              ],
+                            )),
+                      ),
+              ],
+            ),
+          ),
         ));
   }
 }
