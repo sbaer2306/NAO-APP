@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:nao_app/ui_elements/info_card.dart';
 
 // TODO: Add data bindings
@@ -47,8 +49,70 @@ class ConfigTitle extends StatelessWidget {
 class ConfigView extends StatelessWidget {
   const ConfigView({Key? key}) : super(key: key);
 
-  void nilHandlerStr(String? _) {}
-  void nilHandlerDbl(double? _) {}
+  Future<void> nameHandler(String name) async {
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'type': 'Name', 'value': name});
+
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Derzeitiger Name: $name");
+      }
+    }
+  }
+
+  Future<void> ipHandler(String ip) async {
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'type': 'IP-Adresse', 'value': ip});
+
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Derzeitige IP-Adresse: $ip");
+      }
+    }
+  }
+
+  Future<void> languageHandler(String lng) async {
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'type': 'Language', 'value': lng});
+
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Derzeitige Sprache: $lng");
+      }
+    }
+  }
+
+  Future<void> voiceHandler(String lng) async {
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'type': 'Voice', 'value': lng});
+
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Derzeitige Stimme: $lng");
+      }
+    }
+  }
+
+  Future<void> volumeHandler(double vol) async {
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
+
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Derzeitige Stimmenlautstärke: $vol");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +125,7 @@ class ConfigView extends StatelessWidget {
             title: "Configure your NAO",
             description:
                 "Configure your NAO to your needs and preferences. Feel free to play around with the settings and find the best configuration for you."),
-        Row(children: const [
+        const Row(children: [
           Expanded(
             child: ConfigTitle(title: "Wifi"),
           ),
@@ -102,19 +166,25 @@ class ConfigView extends StatelessWidget {
           ),
         ),
         const ConfigTitle(title: "Name"),
-        const ConfigItem(children: [
+        ConfigItem(children: [
           Expanded(
             child: TextField(
               decoration:
-                  InputDecoration(hintText: "Enter the name for the NAO"),
+                  const InputDecoration(hintText: "Enter the name for the NAO"),
+              onChanged: (value) {
+                nameHandler(value.toString());
+                },
             ),
           ),
         ]),
         const ConfigTitle(title: "Network Adress"),
-        const ConfigItem(children: [
+        ConfigItem(children: [
           Expanded(
             child: TextField(
-              decoration: InputDecoration(hintText: "Enter the IP"),
+              decoration: const InputDecoration(hintText: "Enter the IP"),
+              onChanged: (value) {
+                ipHandler(value.toString());
+              },
             ),
           ),
         ]),
@@ -145,7 +215,9 @@ class ConfigView extends StatelessWidget {
                             value: "chineese",
                             child: Text("Chineese"),
                           ),
-                        ], onChanged: nilHandlerStr, value: "english"),
+                        ], onChanged: (value) {
+                          languageHandler(value.toString());
+                        }, value: "english"),
                       )
                     ])
                   ]),
@@ -166,7 +238,9 @@ class ConfigView extends StatelessWidget {
                             value: "female",
                             child: Text("Female"),
                           ),
-                        ], onChanged: nilHandlerStr, value: "male"),
+                        ], onChanged: (value) {
+                          voiceHandler(value.toString());
+                        }, value: "male"),
                       )
                     ]),
                   ]),
@@ -178,7 +252,9 @@ class ConfigView extends StatelessWidget {
           children: [
             const Icon(Icons.volume_mute),
             Expanded(
-              child: Slider(value: 0, onChanged: nilHandlerDbl),
+              child: Slider(value: 0, onChanged: (value) {
+                volumeHandler(value.toDouble());
+              }),
             ),
             const Icon(Icons.volume_up),
           ],
@@ -186,10 +262,10 @@ class ConfigView extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        Padding(
-          padding: const EdgeInsets.all(10),
+        const Padding(
+          padding: EdgeInsets.all(10),
           child: Row(
-            children: const [
+            children: [
               Expanded(
                 child: ElevatedButton(
                   onPressed: null,

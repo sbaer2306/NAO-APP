@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 import '../ui_elements/info_card.dart';
 
@@ -14,12 +16,45 @@ class _SpeakerViewState extends State<SpeakerView> {
 
   double _volume = 0.5;
 
-  void languageHandler(String lng) {}
+  Future<void> languageHandler(String lng) async {
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'type': 'Language', 'value': lng});
 
-  void voiceHandler(String lng) {}
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Derzeitige Sprache: $lng");
+      }
+    }
+  }
 
-  void volumeHandler(double vol) {
+  Future<void> voiceHandler(String lng) async {
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'type': 'Voice', 'value': lng});
+
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Derzeitige Stimme: $lng");
+      }
+    }
+  }
+
+  Future<void> volumeHandler(double vol) async {
     _volume = vol;
+
+    var url = Uri.https('httpbin.org', 'post');
+    var response = await http.post(url, body: {'type': 'Voice', 'value': _volume.toString()});
+
+    var statusCode = response.statusCode;
+    if (kDebugMode) {
+      print(statusCode);
+      if (statusCode == 200) {
+        print("Derzeitige Stimmenlautstärke: $_volume");
+      }
+    }
 
     setState(() {});
   }
