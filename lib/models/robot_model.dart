@@ -3,8 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:nao_app/api/robot_api_interface.dart';
 
-class RobotModel {
+class RobotModel implements RobotInterface {
   final String ipAddress;
   final String name;
 
@@ -78,4 +79,14 @@ class RobotModel {
 
   @override
   int get hashCode => ipAddress.hashCode;
+
+  @override
+  Future<void> setPosture(String posture) async {
+    // implementation goes here
+  }
+
+  @override
+  Future<void> move(Object moveObject) async {
+    // implementation goes here
+  }
 }
