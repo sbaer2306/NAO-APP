@@ -64,7 +64,8 @@ class ConfigView extends StatelessWidget {
 
   Future<void> ipHandler(String ip) async {
     var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'type': 'IP-Adresse', 'value': ip});
+    var response =
+        await http.post(url, body: {'type': 'IP-Adresse', 'value': ip});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
@@ -77,7 +78,8 @@ class ConfigView extends StatelessWidget {
 
   Future<void> languageHandler(String lng) async {
     var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'type': 'Language', 'value': lng});
+    var response =
+        await http.post(url, body: {'type': 'Language', 'value': lng});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
@@ -103,7 +105,8 @@ class ConfigView extends StatelessWidget {
 
   Future<void> volumeHandler(double vol) async {
     var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
+    var response =
+        await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
@@ -125,7 +128,7 @@ class ConfigView extends StatelessWidget {
             title: "Configure your NAO",
             description:
                 "Configure your NAO to your needs and preferences. Feel free to play around with the settings and find the best configuration for you."),
-        const Row(children: [
+        Row(children: const [
           Expanded(
             child: ConfigTitle(title: "Wifi"),
           ),
@@ -173,7 +176,7 @@ class ConfigView extends StatelessWidget {
                   const InputDecoration(hintText: "Enter the name for the NAO"),
               onChanged: (value) {
                 nameHandler(value.toString());
-                },
+              },
             ),
           ),
         ]),
@@ -198,26 +201,29 @@ class ConfigView extends StatelessWidget {
                     const ConfigTitle(title: "Language"),
                     ConfigItem(children: [
                       Expanded(
-                        child: DropdownButton(items: const [
-                          DropdownMenuItem(
-                            value: "english",
-                            child: Text("English"),
-                          ),
-                          DropdownMenuItem(
-                            value: "german",
-                            child: Text("German"),
-                          ),
-                          DropdownMenuItem(
-                            value: "spanish",
-                            child: Text("Spanish"),
-                          ),
-                          DropdownMenuItem(
-                            value: "chineese",
-                            child: Text("Chineese"),
-                          ),
-                        ], onChanged: (value) {
-                          languageHandler(value.toString());
-                        }, value: "english"),
+                        child: DropdownButton(
+                            items: const [
+                              DropdownMenuItem(
+                                value: "english",
+                                child: Text("English"),
+                              ),
+                              DropdownMenuItem(
+                                value: "german",
+                                child: Text("German"),
+                              ),
+                              DropdownMenuItem(
+                                value: "spanish",
+                                child: Text("Spanish"),
+                              ),
+                              DropdownMenuItem(
+                                value: "chineese",
+                                child: Text("Chineese"),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              languageHandler(value.toString());
+                            },
+                            value: "english"),
                       )
                     ])
                   ]),
@@ -229,18 +235,21 @@ class ConfigView extends StatelessWidget {
                     const ConfigTitle(title: "Voice"),
                     ConfigItem(children: [
                       Expanded(
-                        child: DropdownButton(items: const [
-                          DropdownMenuItem(
-                            value: "male",
-                            child: Text("Male"),
-                          ),
-                          DropdownMenuItem(
-                            value: "female",
-                            child: Text("Female"),
-                          ),
-                        ], onChanged: (value) {
-                          voiceHandler(value.toString());
-                        }, value: "male"),
+                        child: DropdownButton(
+                            items: const [
+                              DropdownMenuItem(
+                                value: "male",
+                                child: Text("Male"),
+                              ),
+                              DropdownMenuItem(
+                                value: "female",
+                                child: Text("Female"),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              voiceHandler(value.toString());
+                            },
+                            value: "male"),
                       )
                     ]),
                   ]),
@@ -252,9 +261,11 @@ class ConfigView extends StatelessWidget {
           children: [
             const Icon(Icons.volume_mute),
             Expanded(
-              child: Slider(value: 0, onChanged: (value) {
-                volumeHandler(value.toDouble());
-              }),
+              child: Slider(
+                  value: 0,
+                  onChanged: (value) {
+                    volumeHandler(value.toDouble());
+                  }),
             ),
             const Icon(Icons.volume_up),
           ],
@@ -262,10 +273,10 @@ class ConfigView extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        const Padding(
-          padding: EdgeInsets.all(10),
+        Padding(
+          padding: const EdgeInsets.all(10),
           child: Row(
-            children: [
+            children: const [
               Expanded(
                 child: ElevatedButton(
                   onPressed: null,
