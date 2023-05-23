@@ -21,16 +21,15 @@ class RobotModel implements RobotInterface {
     var url = Uri.http('$ipAddress:8080', '/api/connect');
     final headers = {"Content-type": "application/json"};
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
-    var response; 
+    var response;
 
-    try{
+    try {
       response = await http.post(url, headers: headers, body: json);
-    }catch (error){
+    } catch (error) {
       if (kDebugMode) {
         print(error);
       }
     }
-    
 
     var statusCode = response.statusCode;
     /* if (kDebugMode) {
@@ -82,11 +81,40 @@ class RobotModel implements RobotInterface {
 
   @override
   Future<void> setPosture(String posture) async {
-    // implementation goes here
+    var url = Uri.http('$ipAddress:8080', '/api/move/posture');
+    var headers = {"Content-type": "application/json"};
+    var body = json.encode({
+      'enableArmsInWalkAlgorithm': true,
+      'posture': posture,
+    });
+
+    try {
+      var response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        print("Success: $posture");
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
   }
 
   @override
   Future<void> move(Object moveObject) async {
-    // implementation goes here
+    var url = Uri.http('$ipAddress:8080', '/api/move/movement');
+    var headers = {"Content-type": "application/json"};
+    var body = json.encode(moveObject);
+
+    try {
+      var response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        print('Success: ${json.encode(moveObject)}.');
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
   }
 }

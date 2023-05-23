@@ -22,7 +22,11 @@ class MovementViewState extends State<MovementView> {
   }
 
   Future<void> actionMovement(String movement) async {
-    await _robot.setPosture(movement);
+    try {
+      await _robot.setPosture(movement);
+    } catch (error) {
+      print('Error occured: $error');
+    }
   }
 
   Future<void> controlMovement(String direction) async {
@@ -41,7 +45,11 @@ class MovementViewState extends State<MovementView> {
     if (direction == 'Backward') moveObject['xCoordinate'] = -1.0;
     if (direction == 'Right') moveObject['yCoordinate'] = -1.0;
 
-    await _robot.move(moveObject);
+    try {
+      await _robot.move(moveObject);
+    } catch (error) {
+      print('Error occured: $error');
+    }
   }
 
   @override
