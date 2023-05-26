@@ -47,7 +47,8 @@ class _ConnectingDialogState extends State<ConnectingDialog>
             ? const Text("Verbindung erfolgreich")
             : const Text("Verbindung fehlgeschlagen"),
         content: widget.code == 200
-            ? Row(
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                       "Sie sind mit dem NAO verbunden\nIP-Adresse: ${widget.ip}"),
@@ -59,7 +60,7 @@ class _ConnectingDialogState extends State<ConnectingDialog>
                 ],
               )
             : Text(
-                "Es konnte keine Verbindung hergestellt werden. Statuscode: ${widget.code}"),
+                "Es konnte keine Verbindung hergestellt werden.\nStatuscode: ${widget.code}"),
         actions: <Widget>[
           OutlinedButton(
               onPressed: () {

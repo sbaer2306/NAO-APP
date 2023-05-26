@@ -12,33 +12,31 @@ class RobotModel implements RobotInterface {
   RobotModel({required this.ipAddress, this.name = ""});
 
   Future<int> connect() async {
-    //Test Verbindung
-    /* var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'name': 'test'}); */
-
     //TODO:PORT in Maske
     var port = '9559';
-    var url = Uri.http('$ipAddress:8080', '/api/connect');
+
+    //Test URL
+    var url = Uri.https('httpbin.org', 'post');
+    //NAO URL
+    //var url = Uri.http('$ipAddress:8080', '/api/connect');
+
     final headers = {"Content-type": "application/json"};
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
-    var response;
 
-    try {
-      response = await http.post(url, headers: headers, body: json);
-    } catch (error) {
-      if (kDebugMode) {
-        print(error);
-      }
-    }
+    //TEST response
+    final response = await http.post(url, body: {'name': 'test'}).timeout(
+        const Duration(seconds: 10), onTimeout: () {
+      return http.Response('statusCode', 408);
+    });
 
-    var statusCode = response.statusCode;
-    /* if (kDebugMode) {
-      print(statusCode);
-      if (statusCode == 200) {
-        print("Verbindung erfolgreich");
-      }
-    } */
-    return statusCode;
+    //NAO response
+/*     final response = await http
+        .post(url, headers: headers, body: json)
+        .timeout(const Duration(seconds: 7), onTimeout: () {
+      return http.Response('statusCode', 408);
+    }); */
+
+    return response.statusCode;
   }
 
   RobotModel copyWith({
