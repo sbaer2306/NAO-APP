@@ -133,15 +133,7 @@ class MovementViewState extends State<MovementView> {
                     icon: Icons.u_turn_left,
                     function: () => controlMovement("Twist left"))),
           ),
-          const SizedBox(width: 10.0),
-          Expanded(
-            child: SizedBox(
-                height: 70.0,
-                child: ControlButton(
-                    icon: Icons.arrow_upward,
-                    function: () => controlMovement("Forward"))),
-          ),
-          const SizedBox(width: 10.0),
+          const SizedBox(width: 120.0),
           Expanded(
             child: SizedBox(
                 height: 70.0,
@@ -152,6 +144,13 @@ class MovementViewState extends State<MovementView> {
           const SizedBox(width: 10.0),
         ],
       )),
+      Center(
+          child: SizedBox(
+              height: 70.0,
+              width: 120,
+              child: ControlButton(
+                  icon: Icons.arrow_upward,
+                  function: () => controlMovement("Forward")))),
       Expanded(
           child: Row(children: [
         const SizedBox(width: 10.0),
