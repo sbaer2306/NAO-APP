@@ -125,15 +125,15 @@ class ConfigView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const InfoCard(
-                title: "Configure your NAO",
+                title: "Konfiguriere deinen NAO",
                 description:
-                    "Configure your NAO to your needs and preferences. Feel free to play around with the settings and find the best configuration for you."),
+                    "Konfugiere deinen NAO nach deinen Wünschen und Vorlieben. Du kannst gerne mit den Einstellungen herumspielen und die beste Konfiguration für dich finden."),
             Row(children: const [
               Expanded(
                 child: ConfigTitle(title: "Wifi"),
               ),
               Expanded(
-                child: ConfigTitle(title: "Battery"),
+                child: ConfigTitle(title: "Akku"),
               ),
             ]),
             const ConfigItem(
@@ -173,18 +173,19 @@ class ConfigView extends StatelessWidget {
               Expanded(
                 child: TextField(
                   decoration: const InputDecoration(
-                      hintText: "Enter the name for the NAO"),
+                      hintText: "Gib einen Namen für deinen NAO ein"),
                   onChanged: (value) {
                     nameHandler(value.toString());
                   },
                 ),
               ),
             ]),
-            const ConfigTitle(title: "Network Adress"),
+            const ConfigTitle(title: "IP Addresse"),
             ConfigItem(children: [
               Expanded(
                 child: TextField(
-                  decoration: const InputDecoration(hintText: "Enter the IP"),
+                  decoration:
+                      const InputDecoration(hintText: "Gib eine IP ein"),
                   onChanged: (value) {
                     ipHandler(value.toString());
                   },
@@ -198,26 +199,26 @@ class ConfigView extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const ConfigTitle(title: "Language"),
+                        const ConfigTitle(title: "Sprache"),
                         ConfigItem(children: [
                           Expanded(
                             child: DropdownButton(
                                 items: const [
                                   DropdownMenuItem(
                                     value: "english",
-                                    child: Text("English"),
+                                    child: Text("Englisch"),
                                   ),
                                   DropdownMenuItem(
                                     value: "german",
-                                    child: Text("German"),
+                                    child: Text("Deutsch"),
                                   ),
                                   DropdownMenuItem(
                                     value: "spanish",
-                                    child: Text("Spanish"),
+                                    child: Text("Spanisch"),
                                   ),
                                   DropdownMenuItem(
                                     value: "chineese",
-                                    child: Text("Chineese"),
+                                    child: Text("Chinesisch"),
                                   ),
                                 ],
                                 onChanged: (value) {
@@ -232,18 +233,18 @@ class ConfigView extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const ConfigTitle(title: "Voice"),
+                        const ConfigTitle(title: "Stimme"),
                         ConfigItem(children: [
                           Expanded(
                             child: DropdownButton(
                                 items: const [
                                   DropdownMenuItem(
                                     value: "male",
-                                    child: Text("Male"),
+                                    child: Text("Männlich"),
                                   ),
                                   DropdownMenuItem(
                                     value: "female",
-                                    child: Text("Female"),
+                                    child: Text("Weiblich"),
                                   ),
                                 ],
                                 onChanged: (value) {
@@ -256,7 +257,7 @@ class ConfigView extends StatelessWidget {
                 )
               ],
             ),
-            const ConfigTitle(title: "Volume"),
+            const ConfigTitle(title: "Lautstärke"),
             ConfigItem(
               children: [
                 const Icon(Icons.volume_mute),
@@ -280,7 +281,7 @@ class ConfigView extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: null,
-                      child: Text("Remove"),
+                      child: Text("Entfernen"),
                     ),
                   ),
                   SizedBox(
@@ -289,7 +290,7 @@ class ConfigView extends StatelessWidget {
                   Expanded(
                       child: ElevatedButton(
                     onPressed: null,
-                    child: Text("Save"),
+                    child: Text("Speichern"),
                   )),
                 ],
               ),

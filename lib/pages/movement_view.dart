@@ -38,12 +38,12 @@ class MovementViewState extends State<MovementView> {
       'speed': 1.0
     };
 
-    if (direction == 'Twist Left') moveObject['tCoordinate'] = 1.0;
-    if (direction == 'Forward') moveObject['xCoordinate'] = 1.0;
-    if (direction == 'Twist Right') moveObject['tCoordinate'] = -1.0;
-    if (direction == 'Left') moveObject['yCoordinate'] = 1.0;
-    if (direction == 'Backward') moveObject['xCoordinate'] = -1.0;
-    if (direction == 'Right') moveObject['yCoordinate'] = -1.0;
+    if (direction == 'Links drehen') moveObject['tCoordinate'] = 1.0;
+    if (direction == 'Vorwärts') moveObject['xCoordinate'] = 1.0;
+    if (direction == 'Rechts drehen') moveObject['tCoordinate'] = -1.0;
+    if (direction == 'Links') moveObject['yCoordinate'] = 1.0;
+    if (direction == 'Zurück') moveObject['xCoordinate'] = -1.0;
+    if (direction == 'Rechts') moveObject['yCoordinate'] = -1.0;
 
     try {
       await _robot.move(moveObject);
@@ -87,28 +87,26 @@ class MovementViewState extends State<MovementView> {
         alignment: WrapAlignment.center,
         children: [
           ActionButton(
-              text: "Stand up", function: () => actionMovement("Standing")),
+              text: "Aufstehen", function: () => actionMovement("Standing")),
           ActionButton(
-              text: "Sit down", function: () => actionMovement("Sitting")),
+              text: "Hinsetzen", function: () => actionMovement("Sitting")),
           ActionButton(
-              text: "Lying Belly",
-              function: () => actionMovement("LyingBelly")),
+              text: "Bauchlage", function: () => actionMovement("LyingBelly")),
           ActionButton(
-              text: "Lying Back", function: () => actionMovement("LyingBack")),
+              text: "Rückenlage", function: () => actionMovement("LyingBack")),
           ActionButton(
-              text: "Lying Leftside",
+              text: "Links hinlegen",
               function: () => actionMovement("LyingLeft")),
           ActionButton(
-              text: "Lying Rightside",
+              text: "Rechts hinlegen",
               function: () => actionMovement("LyingRight")),
-          ActionButton(text: "Back", function: () => actionMovement("Back")),
-          ActionButton(text: "Left", function: () => actionMovement("Left")),
-          ActionButton(text: "Right", function: () => actionMovement("Right")),
+          ActionButton(text: "Zurück", function: () => actionMovement("Back")),
+          ActionButton(text: "Links", function: () => actionMovement("Left")),
+          ActionButton(text: "Rechts", function: () => actionMovement("Right")),
           ActionButton(
-              text: "Upside Down",
-              function: () => actionMovement("UpsideDown")),
+              text: "Umdrehen", function: () => actionMovement("UpsideDown")),
           ActionButton(
-              text: "Kneeling", function: () => actionMovement("Kneeling")),
+              text: "Hinknieen", function: () => actionMovement("Kneeling")),
           ActionButton(
               text: "Lifted", function: () => actionMovement("Lifted")),
         ],
@@ -182,15 +180,6 @@ class MovementViewState extends State<MovementView> {
     ]);
   }
 }
-
-//for scrollview, if it would work...
-List<ActionButton> buttons = [
-  ActionButton(text: "Stand up", function: () => {}),
-  ActionButton(text: "Sit down", function: () {}),
-  ActionButton(text: "Dance", function: () {}),
-  ActionButton(text: "Clap your hands", function: () {}),
-  ActionButton(text: "Yoga", function: () {}),
-];
 
 class ActionButton extends StatelessWidget {
   final String text;
