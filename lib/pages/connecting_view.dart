@@ -7,9 +7,9 @@ import 'package:nao_app/pages/create_connect_view.dart';
 import 'package:nao_app/pages/config_view.dart';
 
 class ConnectView extends StatefulWidget {
-  const ConnectView({super.key, required this.title});
+  const ConnectView({super.key});
 
-  final String title;
+  final String title = "Verbinden";
 
   @override
   State<ConnectView> createState() => _ConnectViewState();
@@ -22,21 +22,17 @@ class _ConnectViewState extends State<ConnectView> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xfffef7ff),
         centerTitle: true,
-        toolbarHeight: 80,
-        title: Text(widget.title,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 25,
-            )),
+        title: Text(
+          widget.title,
+        ),
       ),
       body: Column(
         children: [
           const InfoCard(
               title: "Verwalte deine NAO's",
               description:
-                  "Füge oder entferne deine verschiedenen NAO's, Wählen Sie einen NAO, um seine Konfiguration zu verwalten"),
+                  "Füge neue NAO's hinzu oder entferne bestehende. Wähle einen NAO aus, um seine Konfiguration zu verwalten"),
           Row(
             children: [
               Padding(
@@ -73,8 +69,8 @@ class _ConnectViewState extends State<ConnectView> {
                             Row(
                               children: [
                                 const Icon(
-                                  Icons.smart_toy_sharp,
-                                  size: 40,
+                                  Icons.smart_toy_outlined,
+                                  size: 25,
                                 ),
                                 const SizedBox(
                                   width: 20,
@@ -82,8 +78,7 @@ class _ConnectViewState extends State<ConnectView> {
                                 Text(
                                   robot.name,
                                   style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
                                 ),
                               ],
@@ -94,12 +89,11 @@ class _ConnectViewState extends State<ConnectView> {
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
                               onPressed: () {
-                                //TODO Navigation anpassen
-/*                                 Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ConfigView())); */
+                                            const ConfigView()));
                               },
                             ),
                           ],
