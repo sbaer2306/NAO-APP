@@ -10,23 +10,36 @@ class MainScaffold extends StatefulWidget {
   const MainScaffold({Key? key, this.initialPage = 0}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _MainScaffoldState createState() => _MainScaffoldState();
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
   int _selectedPageIndex = 0;
-  late PageController _pageController;
+
+  List<Widget> pages = [
+    Navigator(
+      onGenerateRoute: (settings) =>
+          MaterialPageRoute(builder: (context) => const HomeView()),
+    ),
+    Navigator(
+      onGenerateRoute: (settings) =>
+          MaterialPageRoute(builder: (context) => const ConnectView()),
+    ),
+    Navigator(
+      onGenerateRoute: (settings) =>
+          MaterialPageRoute(builder: (context) => const ConfigView()),
+    )
+  ];
 
   @override
   void initState() {
     super.initState();
     _selectedPageIndex = widget.initialPage;
-    _pageController = PageController(initialPage: _selectedPageIndex);
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -34,29 +47,14 @@ class _MainScaffoldState extends State<MainScaffold> {
     setState(() {
       _selectedPageIndex = i;
     });
-    // _pageController.jumpToPage(i);
-    _pageController.animateToPage(
-      i,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: const [
-          HomeView(
-            title: "HomeView",
-          ),
-          ConnectView(
-            title: "Verbindungen",
-          ),
-          ConfigView(),
-        ],
+      body: IndexedStack(
+        index: _selectedPageIndex,
+        children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.deepPurple[50],

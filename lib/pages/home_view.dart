@@ -4,9 +4,9 @@ import 'package:nao_app/pages/speaker_view.dart';
 import 'package:nao_app/ui_elements/nao_list_drawer.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key, required this.title});
+  const HomeView({super.key});
 
-  final String title;
+  final String title = "Home";
 
   @override
   State<HomeView> createState() => _HomeViewState();

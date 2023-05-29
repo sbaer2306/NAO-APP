@@ -47,25 +47,20 @@ class _CreateConnectPageState extends State<CreateConnectPage>
       return robot.connect();
     }
 
-    //TODO Einbetten in MainScaffold
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: const Color(0xfffef7ff),
           centerTitle: true,
-          toolbarHeight: 80,
-          title: const Text("Verbindung zum NAO herstellen",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 25,
-              )),
+          title: const Text(
+            "Neue Verbindung",
+          ),
         ),
         body: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-          minWidth: MediaQuery.of(context).size.width,
-          minHeight: MediaQuery.of(context).size.height,
-        ),
+              minWidth: MediaQuery.of(context).size.width,
+              minHeight: MediaQuery.of(context).size.height,
+            ),
             child: Column(
               children: [
                 const InfoCard(
@@ -114,7 +109,8 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                         child: ElevatedButton(
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(RoundedRectangleBorder(
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ))),
                             onPressed: () async {
@@ -136,7 +132,8 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: const [
                                 Icon(Icons.add),
-                                Text("verbinden", style: TextStyle(fontSize: 17))
+                                Text("verbinden",
+                                    style: TextStyle(fontSize: 17))
                               ],
                             )),
                       ),
