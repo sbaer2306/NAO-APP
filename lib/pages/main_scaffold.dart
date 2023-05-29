@@ -60,9 +60,10 @@ class _MainScaffoldState extends State<MainScaffold> {
         backgroundColor: Colors.deepPurple[50],
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.sensors), label: "Connect"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: "Configure"),
+              icon: Icon(Icons.sensors), label: "Verbinden"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: "Konfigurieren"),
         ],
         currentIndex: _selectedPageIndex,
         onTap: _setSelectedPage,
