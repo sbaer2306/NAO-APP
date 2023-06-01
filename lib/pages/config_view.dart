@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:nao_app/models/robot_model.dart';
 import 'package:nao_app/ui_elements/info_card.dart';
 
 class ConfigItem extends StatelessWidget {
@@ -44,10 +45,35 @@ class ConfigTitle extends StatelessWidget {
   }
 }
 
-class ConfigView extends StatelessWidget {
+class ConfigView extends StatefulWidget {
   const ConfigView({Key? key}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() => _ConfigViewState();
+}
+
+class _ConfigViewState extends State<ConfigView> {
+  
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ipAddressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = "";
+    _ipAddressController.text = '192.168.171.';
+  }
+  
+  String languageValue = "german";
+  String voiceValue = "male";
+  double volumeValue = 0.5;
+
   Future<void> nameHandler(String name) async {
+    setState(() {
+      _nameController.text = name;
+    });
+
     var url = Uri.https('httpbin.org', 'post');
     var response = await http.post(url, body: {'type': 'Name', 'value': name});
 
@@ -61,6 +87,10 @@ class ConfigView extends StatelessWidget {
   }
 
   Future<void> ipHandler(String ip) async {
+    setState(() {
+      _ipAddressController.text = ip;
+    });
+    
     var url = Uri.https('httpbin.org', 'post');
     var response =
         await http.post(url, body: {'type': 'IP-Adresse', 'value': ip});
@@ -75,6 +105,10 @@ class ConfigView extends StatelessWidget {
   }
 
   Future<void> languageHandler(String lng) async {
+    setState(() {
+      languageValue = lng;
+    });
+    
     var url = Uri.https('httpbin.org', 'post');
     var response =
         await http.post(url, body: {'type': 'Language', 'value': lng});
@@ -89,6 +123,10 @@ class ConfigView extends StatelessWidget {
   }
 
   Future<void> voiceHandler(String lng) async {
+    setState(() {
+      voiceValue = lng;
+    });
+
     var url = Uri.https('httpbin.org', 'post');
     var response = await http.post(url, body: {'type': 'Voice', 'value': lng});
 
@@ -102,9 +140,12 @@ class ConfigView extends StatelessWidget {
   }
 
   Future<void> volumeHandler(double vol) async {
+    setState(() {
+      volumeValue = vol;
+    });
+    
     var url = Uri.https('httpbin.org', 'post');
-    var response =
-        await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
+    var response = await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
@@ -172,9 +213,10 @@ class ConfigView extends StatelessWidget {
             ConfigItem(children: [
               Expanded(
                 child: TextField(
+                  controller: _nameController,
                   decoration: const InputDecoration(
                       hintText: "Gib einen Namen für deinen NAO ein"),
-                  onChanged: (value) {
+                  onSubmitted: (value) {
                     nameHandler(value.toString());
                   },
                 ),
@@ -184,9 +226,10 @@ class ConfigView extends StatelessWidget {
             ConfigItem(children: [
               Expanded(
                 child: TextField(
+                  controller: _ipAddressController,
                   decoration:
                       const InputDecoration(hintText: "Gib eine IP ein"),
-                  onChanged: (value) {
+                  onSubmitted: (value) {
                     ipHandler(value.toString());
                   },
                 ),
@@ -224,7 +267,7 @@ class ConfigView extends StatelessWidget {
                                 onChanged: (value) {
                                   languageHandler(value.toString());
                                 },
-                                value: "english"),
+                                value: languageValue),
                           )
                         ])
                       ]),
@@ -250,7 +293,7 @@ class ConfigView extends StatelessWidget {
                                 onChanged: (value) {
                                   voiceHandler(value.toString());
                                 },
-                                value: "male"),
+                                value: voiceValue),
                           )
                         ]),
                       ]),
@@ -263,7 +306,7 @@ class ConfigView extends StatelessWidget {
                 const Icon(Icons.volume_mute),
                 Expanded(
                   child: Slider(
-                      value: 0,
+                      value: volumeValue,
                       onChanged: (value) {
                         volumeHandler(value.toDouble());
                       }),
@@ -274,27 +317,6 @@ class ConfigView extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                children: const [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: null,
-                      child: Text("Entfernen"),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: ElevatedButton(
-                    onPressed: null,
-                    child: Text("Speichern"),
-                  )),
-                ],
-              ),
-            )
           ],
         )));
   }
