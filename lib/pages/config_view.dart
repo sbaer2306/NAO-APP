@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:nao_app/models/robot_model.dart';
 import 'package:nao_app/ui_elements/info_card.dart';
 
 class ConfigItem extends StatelessWidget {
@@ -53,10 +52,12 @@ class ConfigView extends StatefulWidget {
 }
 
 class _ConfigViewState extends State<ConfigView> {
-  
-
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ipAddressController = TextEditingController();
+
+  String languageValue = "german";
+  String voiceValue = "male";
+  double volumeValue = 0.5;
 
   @override
   void initState() {
@@ -64,10 +65,6 @@ class _ConfigViewState extends State<ConfigView> {
     _nameController.text = "";
     _ipAddressController.text = '192.168.171.';
   }
-  
-  String languageValue = "german";
-  String voiceValue = "male";
-  double volumeValue = 0.5;
 
   Future<void> nameHandler(String name) async {
     setState(() {
@@ -79,9 +76,9 @@ class _ConfigViewState extends State<ConfigView> {
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitiger Name: $name");
+        // print("Derzeitiger Name: $name");
       }
     }
   }
@@ -90,16 +87,16 @@ class _ConfigViewState extends State<ConfigView> {
     setState(() {
       _ipAddressController.text = ip;
     });
-    
+
     var url = Uri.https('httpbin.org', 'post');
     var response =
         await http.post(url, body: {'type': 'IP-Adresse', 'value': ip});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige IP-Adresse: $ip");
+        // print("Derzeitige IP-Adresse: $ip");
       }
     }
   }
@@ -108,16 +105,16 @@ class _ConfigViewState extends State<ConfigView> {
     setState(() {
       languageValue = lng;
     });
-    
+
     var url = Uri.https('httpbin.org', 'post');
     var response =
         await http.post(url, body: {'type': 'Language', 'value': lng});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige Sprache: $lng");
+        // print("Derzeitige Sprache: $lng");
       }
     }
   }
@@ -132,9 +129,9 @@ class _ConfigViewState extends State<ConfigView> {
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige Stimme: $lng");
+        // print("Derzeitige Stimme: $lng");
       }
     }
   }
@@ -143,15 +140,16 @@ class _ConfigViewState extends State<ConfigView> {
     setState(() {
       volumeValue = vol;
     });
-    
+
     var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
+    var response =
+        await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige Stimmenlautstärke: $vol");
+        // print("Derzeitige Stimmenlautstärke: $vol");
       }
     }
   }
@@ -159,7 +157,7 @@ class _ConfigViewState extends State<ConfigView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Konfiguration")),
+        appBar: AppBar(title: const Text("Konfiguration")),
         body: SingleChildScrollView(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,6 +315,20 @@ class _ConfigViewState extends State<ConfigView> {
             const SizedBox(
               height: 20,
             ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: const [
+                  Expanded(
+                    child: ElevatedButton(
+                      // TODO: MAD23E-70
+                      onPressed: null,
+                      child: Text("Entfernen"),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         )));
   }
