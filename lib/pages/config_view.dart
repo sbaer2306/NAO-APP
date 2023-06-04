@@ -44,73 +44,112 @@ class ConfigTitle extends StatelessWidget {
   }
 }
 
-class ConfigView extends StatelessWidget {
+class ConfigView extends StatefulWidget {
   const ConfigView({Key? key}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() => _ConfigViewState();
+}
+
+class _ConfigViewState extends State<ConfigView> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ipAddressController = TextEditingController();
+
+  String languageValue = "german";
+  String voiceValue = "male";
+  double volumeValue = 0.5;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = "";
+    _ipAddressController.text = '192.168.171.';
+  }
+
   Future<void> nameHandler(String name) async {
+    setState(() {
+      _nameController.text = name;
+    });
+
     var url = Uri.https('httpbin.org', 'post');
     var response = await http.post(url, body: {'type': 'Name', 'value': name});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitiger Name: $name");
+        // print("Derzeitiger Name: $name");
       }
     }
   }
 
   Future<void> ipHandler(String ip) async {
+    setState(() {
+      _ipAddressController.text = ip;
+    });
+
     var url = Uri.https('httpbin.org', 'post');
     var response =
         await http.post(url, body: {'type': 'IP-Adresse', 'value': ip});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige IP-Adresse: $ip");
+        // print("Derzeitige IP-Adresse: $ip");
       }
     }
   }
 
   Future<void> languageHandler(String lng) async {
+    setState(() {
+      languageValue = lng;
+    });
+
     var url = Uri.https('httpbin.org', 'post');
     var response =
         await http.post(url, body: {'type': 'Language', 'value': lng});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige Sprache: $lng");
+        // print("Derzeitige Sprache: $lng");
       }
     }
   }
 
   Future<void> voiceHandler(String lng) async {
+    setState(() {
+      voiceValue = lng;
+    });
+
     var url = Uri.https('httpbin.org', 'post');
     var response = await http.post(url, body: {'type': 'Voice', 'value': lng});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige Stimme: $lng");
+        // print("Derzeitige Stimme: $lng");
       }
     }
   }
 
   Future<void> volumeHandler(double vol) async {
+    setState(() {
+      volumeValue = vol;
+    });
+
     var url = Uri.https('httpbin.org', 'post');
     var response =
         await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
-      print(statusCode);
+      // print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige Stimmenlautstärke: $vol");
+        // print("Derzeitige Stimmenlautstärke: $vol");
       }
     }
   }
@@ -118,7 +157,7 @@ class ConfigView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Konfiguration")),
+        appBar: AppBar(title: const Text("Konfiguration")),
         body: SingleChildScrollView(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,9 +211,10 @@ class ConfigView extends StatelessWidget {
             ConfigItem(children: [
               Expanded(
                 child: TextField(
+                  controller: _nameController,
                   decoration: const InputDecoration(
                       hintText: "Gib einen Namen für deinen NAO ein"),
-                  onChanged: (value) {
+                  onSubmitted: (value) {
                     nameHandler(value.toString());
                   },
                 ),
@@ -184,9 +224,10 @@ class ConfigView extends StatelessWidget {
             ConfigItem(children: [
               Expanded(
                 child: TextField(
+                  controller: _ipAddressController,
                   decoration:
                       const InputDecoration(hintText: "Gib eine IP ein"),
-                  onChanged: (value) {
+                  onSubmitted: (value) {
                     ipHandler(value.toString());
                   },
                 ),
@@ -224,7 +265,7 @@ class ConfigView extends StatelessWidget {
                                 onChanged: (value) {
                                   languageHandler(value.toString());
                                 },
-                                value: "english"),
+                                value: languageValue),
                           )
                         ])
                       ]),
@@ -250,7 +291,7 @@ class ConfigView extends StatelessWidget {
                                 onChanged: (value) {
                                   voiceHandler(value.toString());
                                 },
-                                value: "male"),
+                                value: voiceValue),
                           )
                         ]),
                       ]),
@@ -263,7 +304,7 @@ class ConfigView extends StatelessWidget {
                 const Icon(Icons.volume_mute),
                 Expanded(
                   child: Slider(
-                      value: 0,
+                      value: volumeValue,
                       onChanged: (value) {
                         volumeHandler(value.toDouble());
                       }),
@@ -280,18 +321,11 @@ class ConfigView extends StatelessWidget {
                 children: const [
                   Expanded(
                     child: ElevatedButton(
+                      // TODO: MAD23E-70
                       onPressed: null,
                       child: Text("Entfernen"),
                     ),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: ElevatedButton(
-                    onPressed: null,
-                    child: Text("Speichern"),
-                  )),
                 ],
               ),
             )

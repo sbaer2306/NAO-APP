@@ -14,7 +14,7 @@ class SpeakerView extends StatefulWidget {
 class _SpeakerViewState extends State<SpeakerView> {
   final TextEditingController _speakController = TextEditingController();
 
-  double _volume = 0.5;
+  double volumeValue = 0.5;
   String languageValue = "Deutsch";
   String voiceValue = "Männlich";
 
@@ -54,21 +54,21 @@ class _SpeakerViewState extends State<SpeakerView> {
   }
 
   Future<void> volumeHandler(double vol) async {
-    _volume = vol;
+    setState(() {
+      volumeValue = vol;
+    });
 
     var url = Uri.https('httpbin.org', 'post');
     var response = await http
-        .post(url, body: {'type': 'Voice', 'value': _volume.toString()});
+        .post(url, body: {'type': 'Voice', 'value': vol.toString()});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
       print(statusCode);
       if (statusCode == 200) {
-        print("Derzeitige Stimmenlautstärke: $_volume");
+        print("Derzeitige Stimmenlautstärke: $vol");
       }
     }
-
-    setState(() {});
   }
 
   @override
@@ -145,7 +145,7 @@ class _SpeakerViewState extends State<SpeakerView> {
               )
             ],
           ),
-          const Headline(title: "lautstärke"),
+          const Headline(title: "Lautstärke"),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
@@ -153,10 +153,11 @@ class _SpeakerViewState extends State<SpeakerView> {
                 const Icon(Icons.volume_mute),
                 Expanded(
                   child: Slider(
-                      value: _volume,
+                      value: volumeValue,
                       onChanged: (value) {
                         volumeHandler(value);
-                      }),
+                      },
+                  )
                 ),
                 const Icon(Icons.volume_up),
               ],

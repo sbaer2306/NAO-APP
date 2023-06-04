@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'config_view.dart';
 import 'connecting_view.dart';
 import 'home_view.dart';
 
@@ -26,10 +25,6 @@ class _MainScaffoldState extends State<MainScaffold> {
       onGenerateRoute: (settings) =>
           MaterialPageRoute(builder: (context) => const ConnectView()),
     ),
-    Navigator(
-      onGenerateRoute: (settings) =>
-          MaterialPageRoute(builder: (context) => const ConfigView()),
-    )
   ];
 
   @override
@@ -62,8 +57,6 @@ class _MainScaffoldState extends State<MainScaffold> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
               icon: Icon(Icons.sensors), label: "Verbinden"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: "Konfigurieren"),
         ],
         currentIndex: _selectedPageIndex,
         onTap: _setSelectedPage,
