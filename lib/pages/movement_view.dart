@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nao_app/api/robot_api_interface.dart';
+import 'package:provider/provider.dart';
+import '../providers/robot_provider.dart';
 import '../ui_elements/info_card.dart';
 import '../models/robot_model.dart';
 
@@ -13,15 +15,15 @@ class MovementView extends StatefulWidget {
 }
 
 class MovementViewState extends State<MovementView> {
-  late RobotInterface _robot;
+  //late RobotInterface _robot;
 
-  @override
+/*   @override
   void initState() {
     super.initState();
-    _robot = RobotModel(ipAddress: '192.168.1.100', name: 'NAO');
-  }
+    _robot = RobotModel(ipAddress: '192.168.171.80', name: 'NAO');
+  } */
 
-  Future<void> actionMovement(String movement) async {
+/*   Future<void> actionMovement(String movement) async {
     try {
       await _robot.setPosture(movement);
     } catch (error) {
@@ -38,22 +40,55 @@ class MovementViewState extends State<MovementView> {
       'speed': 1.0
     };
 
-    if (direction == 'Links drehen') moveObject['tCoordinate'] = 1.0;
-    if (direction == 'Vorwärts') moveObject['xCoordinate'] = 1.0;
-    if (direction == 'Rechts drehen') moveObject['tCoordinate'] = -1.0;
-    if (direction == 'Links') moveObject['yCoordinate'] = 1.0;
-    if (direction == 'Zurück') moveObject['xCoordinate'] = -1.0;
-    if (direction == 'Rechts') moveObject['yCoordinate'] = -1.0;
+    if (direction == 'Twist left') moveObject['tCoordinate'] = 1.0;
+    if (direction == 'Forward') moveObject['xCoordinate'] = 1.0;
+    if (direction == 'Twist right') moveObject['tCoordinate'] = -1.0;
+    if (direction == 'Left') moveObject['yCoordinate'] = 1.0;
+    if (direction == 'Backward') moveObject['xCoordinate'] = -1.0;
+    if (direction == 'Right') moveObject['yCoordinate'] = -1.0;
 
     try {
       await _robot.move(moveObject);
     } catch (error) {
       print('Error occured: $error');
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
+    final robotProvider = Provider.of<RobotProvider>(context, listen: false);
+    
+      Future<void> actionMovement(String movement) async {
+    try {
+      await robotProvider.items[0].setPosture(movement);
+    } catch (error) {
+      print('Error occured: $error');
+    }
+  }
+
+  Future<void> controlMovement(String direction) async {
+    Map<String, dynamic> moveObject = {
+      'enableArmsInWalkAlgorithm': true,
+      'xCoordinate': '0',
+      'yCoordinate': '0',
+      'tCoordinate': '0',
+      'speed': 1.0
+    };
+
+    if (direction == 'Twist left') moveObject['tCoordinate'] = 1.0;
+    if (direction == 'Forward') moveObject['xCoordinate'] = 1.0;
+    if (direction == 'Twist right') moveObject['tCoordinate'] = -1.0;
+    if (direction == 'Left') moveObject['yCoordinate'] = 1.0;
+    if (direction == 'Backward') moveObject['xCoordinate'] = 0.0;
+    if (direction == 'Right') moveObject['yCoordinate'] = -1.0;
+
+    try {
+      await robotProvider.items[0].move(moveObject);
+    } catch (error) {
+      print('Error occured: $error');
+    }
+  }
+
     return Column(children: <Widget>[
       const InfoCard(
         title: "Lass den NAO bewegen",
@@ -87,9 +122,9 @@ class MovementViewState extends State<MovementView> {
         alignment: WrapAlignment.center,
         children: [
           ActionButton(
-              text: "Aufstehen", function: () => actionMovement("Standing")),
+              text: "Aufstehen", function: () => actionMovement("Stand")),
           ActionButton(
-              text: "Hinsetzen", function: () => actionMovement("Sitting")),
+              text: "Hinsetzen", function: () => actionMovement("Sit")),
           ActionButton(
               text: "Bauchlage", function: () => actionMovement("LyingBelly")),
           ActionButton(

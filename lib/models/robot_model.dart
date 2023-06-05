@@ -11,30 +11,28 @@ class RobotModel implements RobotInterface {
 
   RobotModel({required this.ipAddress, this.name = ""});
 
-  Future<int> connect() async {
-    //TODO:PORT in Maske
-    var port = '9559';
-
+  Future<int> connect(String port) async {
+      
     //Test URL
-    var url = Uri.https('httpbin.org', 'post');
+    //var url = Uri.https('httpbin.org', 'post');
     //NAO URL
-    //var url = Uri.http('$ipAddress:8080', '/api/connect');
+    var url = Uri.http('$ipAddress:8080', '/api/connect');
 
     final headers = {"Content-type": "application/json"};
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
 
     //TEST response
-    final response = await http.post(url, body: {'name': 'test'}).timeout(
+/*     final response = await http.post(url, body: {'name': 'test'}).timeout(
         const Duration(seconds: 10), onTimeout: () {
       return http.Response('statusCode', 408);
-    });
+    }); */
 
     //NAO response
-/*     final response = await http
+    final response = await http
         .post(url, headers: headers, body: json)
-        .timeout(const Duration(seconds: 7), onTimeout: () {
+        .timeout(const Duration(seconds: 10), onTimeout: () {
       return http.Response('statusCode', 408);
-    }); */
+    });
 
     return response.statusCode;
   }
@@ -81,21 +79,26 @@ class RobotModel implements RobotInterface {
   Future<void> setPosture(String posture) async {
     var url = Uri.http('$ipAddress:8080', '/api/move/posture');
     var headers = {"Content-type": "application/json"};
-    var body = json.encode({
+    var body = '{"enableArmsInWalkAlgorithm": true, "posture": "$posture", "speed": ${1}}';
+/*     
+    json.encode({
       'enableArmsInWalkAlgorithm': true,
       'posture': posture,
-    });
+    }); */
 
-    try {
-      var response = await http.post(url, headers: headers, body: body);
-      if (response.statusCode == 200) {
-        print("Success: $posture");
-      } else {
-        print('${response.statusCode}: ${response.body}');
-      }
-    } catch (error) {
-      print('Error occurred: $error');
+    if(kDebugMode){
+      try {
+        var response = await http.post(url, headers: headers, body: body);
+        if (response.statusCode == 200) {
+          print("Success: $posture");
+        } else {
+          print('${response.statusCode}: ${response.body}');
+        }
+      } catch (error) {
+        print('Error occurred: $error');
+      }  
     }
+    
   }
 
   @override
@@ -103,16 +106,20 @@ class RobotModel implements RobotInterface {
     var url = Uri.http('$ipAddress:8080', '/api/move/movement');
     var headers = {"Content-type": "application/json"};
     var body = json.encode(moveObject);
+    if(kDebugMode){
+      try {
+        var response = await http.post(url, headers: headers, body: body);
 
-    try {
-      var response = await http.post(url, headers: headers, body: body);
-      if (response.statusCode == 200) {
-        print('Success: ${json.encode(moveObject)}.');
-      } else {
-        print('${response.statusCode}: ${response.body}');
-      }
-    } catch (error) {
-      print('Error occurred: $error');
+        
+        if (response.statusCode == 200) {
+          print('Success: ${json.encode(moveObject)}.');
+        } else {
+          print('${response.statusCode}: ${response.body}');
+        }
+      } catch (error) {
+        print('Error occurred: $error');
+      }  
     }
+    
   }
 }
