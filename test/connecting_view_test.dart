@@ -16,7 +16,7 @@ void main() {
       create: (context) => RobotProvider(),
       child: MaterialApp(
         home: const ConnectView(
-          title: "testTitle",
+
         ),
         navigatorObservers: [mockObserver],
       ));
