@@ -12,7 +12,6 @@ class RobotModel implements RobotInterface {
   RobotModel({required this.ipAddress, this.name = ""});
 
   Future<int> connect(String port) async {
-      
     //Test URL
     //var url = Uri.https('httpbin.org', 'post');
     //NAO URL
@@ -79,14 +78,15 @@ class RobotModel implements RobotInterface {
   Future<void> setPosture(String posture) async {
     var url = Uri.http('$ipAddress:8080', '/api/move/posture');
     var headers = {"Content-type": "application/json"};
-    var body = '{"enableArmsInWalkAlgorithm": true, "posture": "$posture", "speed": ${1}}';
+    var body =
+        '{"enableArmsInWalkAlgorithm": true, "posture": "$posture", "speed": ${1}}';
 /*     
     json.encode({
       'enableArmsInWalkAlgorithm': true,
       'posture': posture,
     }); */
 
-    if(kDebugMode){
+    if (kDebugMode) {
       try {
         var response = await http.post(url, headers: headers, body: body);
         if (response.statusCode == 200) {
@@ -96,9 +96,8 @@ class RobotModel implements RobotInterface {
         }
       } catch (error) {
         print('Error occurred: $error');
-      }  
+      }
     }
-    
   }
 
   @override
@@ -106,11 +105,10 @@ class RobotModel implements RobotInterface {
     var url = Uri.http('$ipAddress:8080', '/api/move/movement');
     var headers = {"Content-type": "application/json"};
     var body = json.encode(moveObject);
-    if(kDebugMode){
+    if (kDebugMode) {
       try {
         var response = await http.post(url, headers: headers, body: body);
 
-        
         if (response.statusCode == 200) {
           print('Success: ${json.encode(moveObject)}.');
         } else {
@@ -118,8 +116,27 @@ class RobotModel implements RobotInterface {
         }
       } catch (error) {
         print('Error occurred: $error');
-      }  
+      }
     }
-    
+  }
+
+  @override
+  Future<void> activateCamera() async {
+    var url = Uri.http('$ipAddress:8080', '/api/move/movement');
+    var headers = {"Content-type": "application/json"};
+    var body = json.encode(""); //TODO
+    if (kDebugMode) {
+      try {
+        var response = await http.post(url, headers: headers, body: body);
+
+        if (response.statusCode == 200) {
+          print('Success: ${json.encode("")}.'); //TODO
+        } else {
+          print('${response.statusCode}: ${response.body}');
+        }
+      } catch (error) {
+        print('Error occurred: $error');
+      }
+    }
   }
 }

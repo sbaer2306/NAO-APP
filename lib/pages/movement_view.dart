@@ -57,37 +57,50 @@ class MovementViewState extends State<MovementView> {
   @override
   Widget build(BuildContext context) {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
-    
-      Future<void> actionMovement(String movement) async {
-    try {
-      await robotProvider.items[0].setPosture(movement);
-    } catch (error) {
-      print('Error occured: $error');
+    bool isMoving = false;
+
+    Future<void> actionMovement(String movement) async {
+      try {
+        await robotProvider.items[0].setPosture(movement);
+      } catch (error) {
+        print('Error occured: $error');
+      }
     }
-  }
 
-  Future<void> controlMovement(String direction) async {
-    Map<String, dynamic> moveObject = {
-      'enableArmsInWalkAlgorithm': true,
-      'xCoordinate': '0',
-      'yCoordinate': '0',
-      'tCoordinate': '0',
-      'speed': 1.0
-    };
+    Future<void> controlMovement(String direction) async {
+      Map<String, dynamic> moveObject = {
+        'enableArmsInWalkAlgorithm': true,
+        'xCoordinate': '0',
+        'yCoordinate': '0',
+        'tCoordinate': '0',
+        'speed': 1.0
+      };
 
-    if (direction == 'Twist left') moveObject['tCoordinate'] = 1.0;
-    if (direction == 'Forward') moveObject['xCoordinate'] = 1.0;
-    if (direction == 'Twist right') moveObject['tCoordinate'] = -1.0;
-    if (direction == 'Left') moveObject['yCoordinate'] = 1.0;
-    if (direction == 'Backward') moveObject['xCoordinate'] = 0.0;
-    if (direction == 'Right') moveObject['yCoordinate'] = -1.0;
+      if (direction == 'Twist left') moveObject['tCoordinate'] = 1.0;
+      if (direction == 'Forward') moveObject['xCoordinate'] = 1.0;
+      if (direction == 'Twist right') moveObject['tCoordinate'] = -1.0;
+      if (direction == 'Left') moveObject['yCoordinate'] = 1.0;
+      if (direction == 'Backward') moveObject['xCoordinate'] = 0.0;
+      if (direction == 'Right') moveObject['yCoordinate'] = -1.0;
+      if (direction == "Stop") {
+        moveObject['xCoordinate'] = 0;
+        moveObject['yCoordinate'] = 0;
+        moveObject['tCoordinate'] = 0;
+        moveObject['speed'] = 1.0;
+      }
 
-    try {
-      await robotProvider.items[0].move(moveObject);
-    } catch (error) {
-      print('Error occured: $error');
+      if (!isMoving) {
+        isMoving = true;
+        try {
+          await robotProvider.items[0].move(moveObject);
+        } catch (error) {
+          print('Error occured: $error');
+        } finally {
+          print("Finally block executed from controlMovement");
+          isMoving = false;
+        }
+      }
     }
-  }
 
     return Column(children: <Widget>[
       const InfoCard(
@@ -161,54 +174,96 @@ class MovementViewState extends State<MovementView> {
           const SizedBox(width: 10.0),
           Expanded(
             child: SizedBox(
-                height: 70.0,
-                child: ControlButton(
-                    icon: Icons.u_turn_left,
-                    function: () => controlMovement("Twist left"))),
+              height: 70.0,
+              child: ControlButton(
+                icon: Icons.u_turn_left,
+                onPressed: () {
+                  controlMovement('Twist left');
+                },
+                onReleased: () {
+                  controlMovement('Stop');
+                },
+              ),
+            ),
           ),
           const SizedBox(width: 120.0),
           Expanded(
             child: SizedBox(
-                height: 70.0,
-                child: ControlButton(
-                    icon: Icons.u_turn_right,
-                    function: () => controlMovement("Twist right"))),
+              height: 70.0,
+              child: ControlButton(
+                icon: Icons.u_turn_right,
+                onPressed: () {
+                  controlMovement('Twist right');
+                },
+                onReleased: () {
+                  controlMovement('Stop');
+                },
+              ),
+            ),
           ),
           const SizedBox(width: 10.0),
         ],
       )),
       Center(
           child: SizedBox(
-              height: 70.0,
-              width: 120,
-              child: ControlButton(
-                  icon: Icons.arrow_upward,
-                  function: () => controlMovement("Forward")))),
+        height: 70.0,
+        width: 120,
+        child: ControlButton(
+          icon: Icons.arrow_upward,
+          onPressed: () {
+            controlMovement('Forward');
+          },
+          onReleased: () {
+            controlMovement('Stop');
+          },
+        ),
+      )),
       Expanded(
           child: Row(children: [
         const SizedBox(width: 10.0),
         Expanded(
           child: SizedBox(
-              height: 70.0,
-              child: ControlButton(
-                  icon: Icons.arrow_back,
-                  function: () => controlMovement("Left"))),
+            height: 70.0,
+            child: ControlButton(
+              icon: Icons.arrow_back,
+              onPressed: () {
+                controlMovement('Left');
+              },
+              onReleased: () {
+                controlMovement('Stop');
+              },
+            ),
+          ),
         ),
         const SizedBox(width: 10.0),
         Expanded(
           child: SizedBox(
-              height: 70.0,
-              child: ControlButton(
-                  icon: Icons.arrow_downward,
-                  function: () => controlMovement("Backward"))),
+            height: 70.0,
+            child: ControlButton(
+              icon: Icons.arrow_downward,
+              onPressed: () {
+                controlMovement('Backward');
+              },
+              onReleased: () {
+                controlMovement('Stop');
+              },
+            ),
+          ),
         ),
         const SizedBox(width: 10.0),
         Expanded(
           child: SizedBox(
-              height: 70.0,
-              child: ControlButton(
-                  icon: Icons.arrow_forward,
-                  function: () => controlMovement("Right"))),
+            height: 70.0,
+            child: ControlButton(
+              icon: Icons.arrow_forward,
+              onPressed: () {
+                controlMovement('Right');
+              },
+              onReleased: () {
+                controlMovement('Stop');
+              },
+            ),
+          ),
         ),
         const SizedBox(width: 10.0),
       ]))
@@ -239,31 +294,68 @@ class ActionButton extends StatelessWidget {
   }
 }
 
-class ControlButton extends StatelessWidget {
+class ControlButton extends StatefulWidget {
   final IconData icon;
-  final Function()? function;
+  final Function()? onPressed;
+  final Function()? onReleased;
 
-  const ControlButton({super.key, required this.icon, required this.function});
+  const ControlButton(
+      {super.key,
+      required this.icon,
+      required this.onPressed,
+      required this.onReleased});
+
+  @override
+  _ControlButtonState createState() => _ControlButtonState();
+}
+
+class _ControlButtonState extends State<ControlButton> {
+  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
-    return Ink(
+    return GestureDetector(
+      onTapDown: (_) {
+        setState(() {
+          _isPressed = true;
+          widget.onPressed?.call();
+        });
+      },
+      onTapUp: (_) {
+        setState(() {
+          _isPressed = false;
+          widget.onReleased?.call();
+        });
+      },
+      onTapCancel: () {
+        setState(() {
+          _isPressed = false;
+          widget.onReleased?.call();
+        });
+      },
+      child: Ink(
         decoration: ShapeDecoration(
-          color: Colors.deepPurple[50],
+          color: _isPressed ? Colors.deepPurple[200] : Colors.deepPurple[50],
           shape: const StadiumBorder(),
         ),
         child: IconButton(
-            iconSize: 30.0,
-            onPressed: function,
-            style: IconButton.styleFrom(
-                backgroundColor: Colors.deepPurple[50],
-                shadowColor: Colors.purpleAccent[50],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-                minimumSize: const Size(10, 78)),
-            icon: Icon(
-              icon,
-              color: Colors.purple[800],
-            )));
+          iconSize: 30.0,
+          onPressed: () {},
+          style: IconButton.styleFrom(
+            backgroundColor:
+                _isPressed ? Colors.deepPurple[200] : Colors.deepPurple[50],
+            shadowColor: Colors.purpleAccent[50],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            minimumSize: const Size(10, 78),
+          ),
+          icon: Icon(
+            widget.icon,
+            color: Colors.purple[800],
+          ),
+        ),
+      ),
+    );
   }
 }
