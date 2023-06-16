@@ -23,15 +23,6 @@ class _HomeViewState extends State<HomeView> {
         child: Scaffold(
             drawer: const NaoListDrawer(),
             appBar: AppBar(
-              actions: <Widget>[
-                IconButton(
-                  onPressed: _toggleNaoList,
-                  icon: const Badge(
-                    label: Text('6'),
-                    child: Icon(Icons.menu),
-                  ),
-                ),
-              ],
               title: const Text("Home"),
               centerTitle: true,
               bottom: const TabBar(tabs: [
