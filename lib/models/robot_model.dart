@@ -14,25 +14,25 @@ class RobotModel implements RobotInterface {
 
   Future<int> connect(String port) async {
     //Test URL
-    //var url = Uri.https('httpbin.org', 'post');
+    var url = Uri.https('httpbin.org', 'post');
     //NAO URL
-    var url = Uri.http('$ipAddress:8080', '/api/connect');
+    //var url = Uri.http('$ipAddress:8080', '/api/connect');
 
     final headers = {"Content-type": "application/json"};
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
 
     //TEST response
-/*     final response = await http.post(url, body: {'name': 'test'}).timeout(
+    final response = await http.post(url, body: {'name': 'test'}).timeout(
         const Duration(seconds: 10), onTimeout: () {
       return http.Response('statusCode', 408);
-    }); */
+    });
 
     //NAO response
-    final response = await http
+/*     final response = await http
         .post(url, headers: headers, body: json)
         .timeout(const Duration(seconds: 10), onTimeout: () {
       return http.Response('statusCode', 408);
-    });
+    }); */
 
     return response.statusCode;
   }

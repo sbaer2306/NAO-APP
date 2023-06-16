@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/robot_provider.dart';
@@ -61,12 +62,15 @@ class MovementViewState extends State<MovementView> {
   @override
   Widget build(BuildContext context) {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
+    final activeRobots = robotProvider.activeItems;
     bool isMoving = false;
 
     Future<void> actionMovement(String movement) async {
       String translatedMovement = translateMovement(movement);
       try {
-        await robotProvider.items[0].setPosture(translatedMovement);
+        for (int i = 0; i < activeRobots.length; i++) {
+          await activeRobots[i].setPosture(translatedMovement);
+        }
       } catch (error) {
         print('Error occured: $error');
       }
@@ -97,7 +101,9 @@ class MovementViewState extends State<MovementView> {
       if (!isMoving) {
         isMoving = true;
         try {
-          await robotProvider.items[0].move(moveObject);
+          for (int i = 0; i < activeRobots.length; i++) {
+            await activeRobots[i].move(moveObject);
+          }
         } catch (error) {
           print('Error occured: $error');
         } finally {
