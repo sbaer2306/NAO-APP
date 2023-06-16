@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:nao_app/api/robot_api_interface.dart';
 
@@ -36,7 +37,7 @@ class RobotModel implements RobotInterface {
     return response.statusCode;
   }
 
-  RobotModel copyWith({
+/*   RobotModel copyWith({
     String? ipAddress,
   }) {
     return RobotModel(
@@ -72,7 +73,7 @@ class RobotModel implements RobotInterface {
   }
 
   @override
-  int get hashCode => ipAddress.hashCode;
+  int get hashCode => ipAddress.hashCode; */
 
   @override
   Future<void> setPosture(String posture) async {
@@ -121,22 +122,9 @@ class RobotModel implements RobotInterface {
   }
 
   @override
-  Future<void> activateCamera() async {
-    var url = Uri.http('$ipAddress:8080', '/api/move/movement');
-    var headers = {"Content-type": "application/json"};
-    var body = json.encode(""); //TODO
-    if (kDebugMode) {
-      try {
-        var response = await http.post(url, headers: headers, body: body);
+  String getVideoStream() {
+    var url = Uri.http('$ipAddress:8080', '/api/vision/video_feed');
 
-        if (response.statusCode == 200) {
-          print('Success: ${json.encode("")}.'); //TODO
-        } else {
-          print('${response.statusCode}: ${response.body}');
-        }
-      } catch (error) {
-        print('Error occurred: $error');
-      }
-    }
+    return url.toString();
   }
 }
