@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/robot_provider.dart';
 import '../ui_elements/info_card.dart';
+import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 
 class CameraView extends StatefulWidget {
   const CameraView({Key? key}) : super(key: key);
@@ -11,22 +12,18 @@ class CameraView extends StatefulWidget {
 }
 
 class CameraViewState extends State<CameraView> {
-  List<String> imageUrls = []; //Storing images send from Nao here.
+  bool isPressed = false;
+
+  void toggleView() {
+    setState(() {
+      isPressed = !isPressed;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
-
-    Future<void> activateCamera() async {
-      //f.e. fetchedImageUrls = await
-      try {
-        //f.e. List<String> fetchedImageUrls = await robotProvider.items[0].activateCamera();
-        setState(() {
-          //imageUrls = fetchedImageUrls;
-        });
-      } catch (error) {
-        print('Error occured: $error');
-      }
-    }
+    final robots = robotProvider.items;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -36,16 +33,25 @@ class CameraViewState extends State<CameraView> {
           description:
               "Wähle einen verbundenen NAO und aktiviere seine Kamera.",
         ),
-        const Expanded(
+        Expanded(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Center(
-              child: Text(
-                'Camera Footage',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-          ),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Center(
+                  child: isPressed
+                      ? GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: (robots.length / 2).round()),
+                          itemCount: robots
+                              .length, //TODO: auf ausgewählte Robots reduzieren
+                          itemBuilder: (context, index) {
+                            return Mjpeg(
+                              stream: robots[index].getVideoStream(),
+                              isLive: true,
+                            );
+                          },
+                        )
+                      : const Text("Wähle deine NAO's aus"))),
         ),
         SizedBox(
           width: double.infinity,
@@ -62,9 +68,17 @@ class CameraViewState extends State<CameraView> {
           spacing: 8.0,
           alignment: WrapAlignment.center,
           children: [
-            IconButton(
-              onPressed: activateCamera,
-              icon: const Icon(Icons.camera),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.deepPurple[50],
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  toggleView();
+                },
+                icon: const Icon(Icons.power_settings_new),
+              ),
             ),
           ],
         ),
