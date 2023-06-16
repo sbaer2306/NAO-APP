@@ -23,7 +23,7 @@ class CameraViewState extends State<CameraView> {
   @override
   Widget build(BuildContext context) {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
-    final robots = robotProvider.items;
+    final robots = robotProvider.activeItems;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
