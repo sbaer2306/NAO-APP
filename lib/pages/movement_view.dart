@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nao_app/api/robot_api_interface.dart';
 import 'package:provider/provider.dart';
 import '../providers/robot_provider.dart';
 import '../ui_elements/info_card.dart';
-import '../models/robot_model.dart';
-
-import 'dart:developer';
 
 class MovementView extends StatefulWidget {
   const MovementView({Key? key}) : super(key: key);
@@ -15,44 +11,52 @@ class MovementView extends StatefulWidget {
 }
 
 class MovementViewState extends State<MovementView> {
-  //late RobotInterface _robot;
+  List<String> buttonNames = [
+    'Aufstehen',
+    'Hinsetzen',
+    'Bauchlage',
+    'Rückenlage',
+    'Links hinlegen',
+    'Rechts hinlegen',
+    'Umdrehen',
+    'Hinknieen'
+  ];
 
-/*   @override
-  void initState() {
-    super.initState();
-    _robot = RobotModel(ipAddress: '192.168.171.80', name: 'NAO');
-  } */
+  String translateMovement(String movement) {
+    //TODO Movements anpassen;
 
-/*   Future<void> actionMovement(String movement) async {
-    try {
-      await _robot.setPosture(movement);
-    } catch (error) {
-      print('Error occured: $error');
+    switch (movement) {
+      case 'Aufstehen':
+        movement = 'Stand';
+        break;
+      case 'Hinsetzen':
+        movement = 'Sit';
+        break;
+      case 'Bauchlage':
+        movement = 'Stand';
+        break;
+      case 'Rückenlage':
+        movement = 'Stand';
+        break;
+      case 'Links hinlegen':
+        movement = 'Stand';
+        break;
+      case 'Rechts hinlegen':
+        movement = 'Stand';
+        break;
+      case 'Umdrehen':
+        movement = 'Stand';
+        break;
+      case 'Hinknieen':
+        movement = 'Stand';
+        break;
+      case 'Lifted':
+        movement = 'Stand';
+        break;
     }
+
+    return movement;
   }
-
-  Future<void> controlMovement(String direction) async {
-    Map<String, dynamic> moveObject = {
-      'enableArmsInWalkAlgorithm': true,
-      'xCoordinate': '0',
-      'yCoordinate': '0',
-      'tCoordinate': '0',
-      'speed': 1.0
-    };
-
-    if (direction == 'Twist left') moveObject['tCoordinate'] = 1.0;
-    if (direction == 'Forward') moveObject['xCoordinate'] = 1.0;
-    if (direction == 'Twist right') moveObject['tCoordinate'] = -1.0;
-    if (direction == 'Left') moveObject['yCoordinate'] = 1.0;
-    if (direction == 'Backward') moveObject['xCoordinate'] = -1.0;
-    if (direction == 'Right') moveObject['yCoordinate'] = -1.0;
-
-    try {
-      await _robot.move(moveObject);
-    } catch (error) {
-      print('Error occured: $error');
-    }
-  } */
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +64,9 @@ class MovementViewState extends State<MovementView> {
     bool isMoving = false;
 
     Future<void> actionMovement(String movement) async {
+      String translatedMovement = translateMovement(movement);
       try {
-        await robotProvider.items[0].setPosture(movement);
+        await robotProvider.items[0].setPosture(translatedMovement);
       } catch (error) {
         print('Error occured: $error');
       }
@@ -80,7 +85,7 @@ class MovementViewState extends State<MovementView> {
       if (direction == 'Forward') moveObject['xCoordinate'] = 1.0;
       if (direction == 'Twist right') moveObject['tCoordinate'] = -1.0;
       if (direction == 'Left') moveObject['yCoordinate'] = 1.0;
-      if (direction == 'Backward') moveObject['xCoordinate'] = 0.0;
+      if (direction == 'Backward') moveObject['xCoordinate'] = -1.0;
       if (direction == 'Right') moveObject['yCoordinate'] = -1.0;
       if (direction == "Stop") {
         moveObject['xCoordinate'] = 0;
@@ -117,47 +122,24 @@ class MovementViewState extends State<MovementView> {
                 textAlign: TextAlign.start,
                 style: TextStyle(color: Color.fromARGB(255, 141, 132, 165)),
               ))),
-      /* scrollable not working?? 
       SizedBox(
-        height: 200,
+        height: 110,
         width: double.infinity,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
-          padding: const EdgeInsets.all(12),
-          itemCount: buttons.length,
+          padding: const EdgeInsets.all(20),
+          itemCount: buttonNames.length,
           separatorBuilder: (context, index) => const SizedBox(width: 12),
-          itemBuilder: (context, index) => buttons[index],
+          itemBuilder: (context, index) {
+            return ActionButton(
+              text: buttonNames[index],
+              function: () {
+                actionMovement(buttonNames[index]);
+              },
+            );
+          },
         ),
-      ) */
-      Wrap(
-        spacing: 8.0,
-        alignment: WrapAlignment.center,
-        children: [
-          ActionButton(
-              text: "Aufstehen", function: () => actionMovement("Stand")),
-          ActionButton(
-              text: "Hinsetzen", function: () => actionMovement("Sit")),
-          ActionButton(
-              text: "Bauchlage", function: () => actionMovement("LyingBelly")),
-          ActionButton(
-              text: "Rückenlage", function: () => actionMovement("LyingBack")),
-          ActionButton(
-              text: "Links hinlegen",
-              function: () => actionMovement("LyingLeft")),
-          ActionButton(
-              text: "Rechts hinlegen",
-              function: () => actionMovement("LyingRight")),
-          ActionButton(text: "Zurück", function: () => actionMovement("Back")),
-          ActionButton(text: "Links", function: () => actionMovement("Left")),
-          ActionButton(text: "Rechts", function: () => actionMovement("Right")),
-          ActionButton(
-              text: "Umdrehen", function: () => actionMovement("UpsideDown")),
-          ActionButton(
-              text: "Hinknieen", function: () => actionMovement("Kneeling")),
-          ActionButton(
-              text: "Lifted", function: () => actionMovement("Lifted")),
-        ],
       ),
       SizedBox(
           width: double.infinity,
