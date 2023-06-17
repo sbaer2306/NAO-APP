@@ -37,13 +37,15 @@ class CameraViewState extends State<CameraView> {
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Center(
-                  child: isPressed
+                  child: (isPressed && robots.isNotEmpty)
                       ? GridView.builder(
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: (robots.length / 2).round()),
-                          itemCount: robots
-                              .length, //TODO: auf ausgewählte Robots reduzieren
+                                  crossAxisCount:
+                                      (robots.length / 2).round() > 0
+                                          ? (robots.length / 2).round()
+                                          : 1),
+                          itemCount: robots.length,
                           itemBuilder: (context, index) {
                             return Mjpeg(
                               stream: robots[index].getVideoStream(),
@@ -51,7 +53,18 @@ class CameraViewState extends State<CameraView> {
                             );
                           },
                         )
-                      : const Text("Wähle deine NAO's aus"))),
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.no_photography, size: 100),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            robots.isNotEmpty
+                                ? const Text("Die Kamera ist ausgeschaltet")
+                                : const Text("Wähle deine NAO's aus"),
+                          ],
+                        ))),
         ),
         SizedBox(
           width: double.infinity,

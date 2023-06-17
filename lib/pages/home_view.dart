@@ -26,9 +26,9 @@ class _HomeViewState extends State<HomeView> {
               title: const Text("Home"),
               centerTitle: true,
               bottom: const TabBar(tabs: [
-                Tab(text: "Movement"),
-                Tab(text: "Camera"),
-                Tab(text: "Speaking"),
+                Tab(text: "Bewegungen"),
+                Tab(text: "Kamera"),
+                Tab(text: "Sprechen"),
               ]),
             ),
             body: const TabBarView(

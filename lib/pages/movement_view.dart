@@ -69,7 +69,7 @@ class MovementViewState extends State<MovementView> {
       String translatedMovement = translateMovement(movement);
       try {
         for (int i = 0; i < activeRobots.length; i++) {
-          await activeRobots[i].setPosture(translatedMovement);
+          activeRobots[i].setPosture(translatedMovement);
         }
       } catch (error) {
         print('Error occured: $error');
@@ -102,7 +102,7 @@ class MovementViewState extends State<MovementView> {
         isMoving = true;
         try {
           for (int i = 0; i < activeRobots.length; i++) {
-            await activeRobots[i].move(moveObject);
+            activeRobots[i].move(moveObject);
           }
         } catch (error) {
           print('Error occured: $error');
