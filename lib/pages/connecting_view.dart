@@ -93,7 +93,7 @@ class _ConnectViewState extends State<ConnectView> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ConfigView()));
+                                            ConfigView(robot: robot)));
                               },
                             ),
                           ],
