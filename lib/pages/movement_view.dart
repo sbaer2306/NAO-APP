@@ -17,15 +17,13 @@ class MovementViewState extends State<MovementView> {
     'Hinsetzen',
     'Bauchlage',
     'Rückenlage',
-    'Links hinlegen',
-    'Rechts hinlegen',
-    'Umdrehen',
-    'Hinknieen'
+    "Hinknien",
+    'Entspannt hinsetzen',
+    'Initialposition',
+    'Neutrale Position',
   ];
 
   String translateMovement(String movement) {
-    //TODO Movements anpassen;
-
     switch (movement) {
       case 'Aufstehen':
         movement = 'Stand';
@@ -34,25 +32,22 @@ class MovementViewState extends State<MovementView> {
         movement = 'Sit';
         break;
       case 'Bauchlage':
-        movement = 'Stand';
+        movement = 'LyingBelly';
         break;
       case 'Rückenlage':
-        movement = 'Stand';
+        movement = 'LyingBack';
         break;
-      case 'Links hinlegen':
-        movement = 'Stand';
+      case 'Entspannt hinsetzen':
+        movement = 'SitRelax';
         break;
-      case 'Rechts hinlegen':
-        movement = 'Stand';
+      case 'Initialposition':
+        movement = 'StandInit';
         break;
-      case 'Umdrehen':
-        movement = 'Stand';
+      case 'Neutrale Position':
+        movement = 'StandZero';
         break;
       case 'Hinknieen':
-        movement = 'Stand';
-        break;
-      case 'Lifted':
-        movement = 'Stand';
+        movement = 'Crouch';
         break;
     }
 
