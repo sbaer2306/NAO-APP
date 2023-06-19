@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../providers/robot_provider.dart';
+import '../models/robot_model.dart' show Enum;
 
 import '../ui_elements/info_card.dart';
 
@@ -16,67 +17,55 @@ class SpeakerView extends StatefulWidget {
 class _SpeakerViewState extends State<SpeakerView> {
   final TextEditingController _speakController = TextEditingController();
 
-  double volumeValue = 0.5;
-  String languageValue = "Deutsch";
-  String voiceValue = "Männlich";
-
-  Future<void> languageHandler(String lng) async {
-    setState(() {
-      languageValue = lng;
-    });
-
-    var url = Uri.https('httpbin.org', 'post');
-    var response =
-        await http.post(url, body: {'type': 'Language', 'value': lng});
-
-    var statusCode = response.statusCode;
-    if (kDebugMode) {
-      print(statusCode);
-      if (statusCode == 200) {
-        print("Derzeitige Sprache: $lng");
-      }
-    }
+  @override
+  void initState() {
+    super.initState();
   }
 
-  Future<void> voiceHandler(String lng) async {
-    setState(() {
-      voiceValue = lng;
-    });
-
-    var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'type': 'Voice', 'value': lng});
-
-    var statusCode = response.statusCode;
-    if (kDebugMode) {
-      print(statusCode);
-      if (statusCode == 200) {
-        print("Derzeitige Stimme: $lng");
-      }
-    }
-  }
-
-  Future<void> volumeHandler(double vol) async {
-    setState(() {
-      volumeValue = vol;
-    });
-
-    var url = Uri.https('httpbin.org', 'post');
-    var response =
-        await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
-
-    var statusCode = response.statusCode;
-    if (kDebugMode) {
-      print(statusCode);
-      if (statusCode == 200) {
-        print("Derzeitige Stimmenlautstärke: $vol");
-      }
-    }
-  }
+  Enum? languageEnum;
+  Enum? voiceEnum;
+  int volumeValue = 50;
 
   @override
   Widget build(BuildContext context) {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
     final activeRobots = robotProvider.activeItems;
+
+    Future<void> languageHandler(String lng) async {
+      setState(() {
+        languageEnum?.selectedItem = lng;
+      });
+
+      Object languageObject = {
+        'language': lng,
+      };
+
+      await activeRobots[0].setLanguage(languageObject);
+    }
+
+    Future<void> voiceHandler(String lng) async {
+      setState(() {
+        voiceEnum?.selectedItem = lng;
+      });
+
+      Object voiceObject = {
+        'language': lng,
+      };
+
+      await activeRobots[0].setLanguage(voiceObject);
+    }
+
+    Future<void> volumeHandler(double vol) async {
+      setState(() {
+        volumeValue = vol.toInt();
+      });
+
+      Object volumeObject = {
+        'volume': vol,
+      };
+
+      await activeRobots[0].setVolume(volumeObject);
+    }
 
     Future<void> saySomething() async {
       String textToSpeak = _speakController.text;
@@ -93,6 +82,27 @@ class _SpeakerViewState extends State<SpeakerView> {
         }
       }
       _speakController.clear();
+    }
+
+    Future<void> getVolume() async {
+      int volume = await activeRobots[0].getVolume();
+      setState(() {
+        this.volumeValue = volume;
+      });
+    }
+
+    Future<void> getLanguage() async {
+      Enum languageEnum = await activeRobots[0].getLanguage();
+      setState(() {
+        this.languageEnum = languageEnum;
+      });
+    }
+
+    Future<void> getVoice() async {
+      Enum voiceEnum = await activeRobots[0].getVoice();
+      setState(() {
+        this.voiceEnum = voiceEnum;
+      });
     }
 
     return SingleChildScrollView(
@@ -120,17 +130,15 @@ class _SpeakerViewState extends State<SpeakerView> {
                     ),
                   ),
                   DropdownButton(
-                    value: languageValue,
-                    items: const [
-                      DropdownMenuItem(
-                        value: "Deutsch",
-                        child: Text("Deutsch"),
-                      ),
-                      DropdownMenuItem(
-                        value: "Englisch",
-                        child: Text("Englisch"),
-                      )
-                    ],
+                    value: languageEnum?.selectedItem ?? '',
+                    items: languageEnum != null
+                        ? languageEnum?.items.map((value) {
+                            return DropdownMenuItem(
+                              value: value.toString(),
+                              child: Text(value.toString()),
+                            );
+                          }).toList()
+                        : [],
                     onChanged: (value) {
                       languageHandler(value.toString());
                     },
@@ -148,17 +156,15 @@ class _SpeakerViewState extends State<SpeakerView> {
                     ),
                   ),
                   DropdownButton(
-                    value: voiceValue,
-                    items: const [
-                      DropdownMenuItem(
-                        value: "Männlich",
-                        child: Text("Männlich"),
-                      ),
-                      DropdownMenuItem(
-                        value: "Weiblich",
-                        child: Text("Weiblich"),
-                      )
-                    ],
+                    value: voiceEnum?.selectedItem ?? '',
+                    items: voiceEnum != null
+                        ? voiceEnum?.items.map((value) {
+                            return DropdownMenuItem(
+                              value: value.toString(),
+                              child: Text(value.toString()),
+                            );
+                          }).toList()
+                        : [],
                     onChanged: (value) {
                       voiceHandler(value.toString());
                     },
@@ -175,7 +181,10 @@ class _SpeakerViewState extends State<SpeakerView> {
                 const Icon(Icons.volume_mute),
                 Expanded(
                     child: Slider(
-                  value: volumeValue,
+                  value: volumeValue.toDouble(),
+                  min: 0,
+                  max: 100,
+                  divisions: 100,
                   onChanged: (value) {
                     volumeHandler(value);
                   },

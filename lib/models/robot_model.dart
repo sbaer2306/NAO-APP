@@ -6,6 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:nao_app/api/robot_api_interface.dart';
 
+class Enum {
+  List<String> items = [];
+  String selectedItem;
+
+  Enum({required this.items, required this.selectedItem});
+}
+
 class RobotModel implements RobotInterface {
   final String ipAddress;
   String name;
@@ -158,6 +165,117 @@ class RobotModel implements RobotInterface {
     Uri url = Uri.http('$ipAddress:8080', '/api/aduio/tts');
     try {
       var response = await http.post(url, headers: headers, body: audioObject);
+      if (response.statusCode == 200) {
+        print('Success:.');
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
+  }
+
+  @override
+  Future<Enum> getLanguage() async {
+    var headers = {"Content-type": "application/json"};
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
+
+    try {
+      var response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Success:.');
+        var data = jsonDecode(response.body);
+        List<String> languages = List<String>.from(data['language']);
+        return Future.value(Enum(items: languages, selectedItem: languages[0]));
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
+    return Future.value(Enum(items: [], selectedItem: ""));
+  }
+
+  @override
+  Future<Enum> getVoice() async {
+    var headers = {"Content-type": "application/json"};
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+
+    try {
+      var response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Success:.');
+        var data = jsonDecode(response.body);
+        List<String> voices = List<String>.from(data['voice']);
+        return Future.value(Enum(items: voices, selectedItem: voices[0]));
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
+    return Future.value(Enum(items: [], selectedItem: ""));
+  }
+
+  @override
+  Future<void> setLanguage(Object languageObject) async {
+    var headers = {"Content-type": "application/json"};
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
+    try {
+      var response =
+          await http.post(url, headers: headers, body: languageObject);
+      if (response.statusCode == 200) {
+        print('Success:.');
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
+  }
+
+  @override
+  Future<void> setVoice(Object voiceObject) async {
+    var headers = {"Content-type": "application/json"};
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+    try {
+      var response = await http.post(url, headers: headers, body: voiceObject);
+      if (response.statusCode == 200) {
+        print('Success:.');
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
+  }
+
+  @override
+  Future<int> getVolume() async {
+    var headers = {"Content-type": "application/json"};
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+
+    try {
+      var response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Success:.');
+        var data = jsonDecode(response.body);
+        return Future.value(data);
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
+    return Future.value(0);
+  }
+
+  @override
+  Future<void> setVolume(Object volumeObject) async {
+    var headers = {"Content-type": "application/json"};
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+    try {
+      var response = await http.post(url, headers: headers, body: volumeObject);
       if (response.statusCode == 200) {
         print('Success:.');
       } else {
