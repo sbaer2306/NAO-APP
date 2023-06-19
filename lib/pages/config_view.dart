@@ -90,9 +90,12 @@ class _ConfigViewState extends State<ConfigView> {
   // Getter
   Future<void> getBattery() async {
     var ipAddress = widget.robot.ipAddress;
+
     var url = Uri.http('$ipAddress:8080', '/api/config/battery');
     var response = await http.get(Uri.parse(url.toString()));
     
+    print(response.statusCode.toString() + ': ' + response.body);
+
     if (response.statusCode == 200) {
       setState(() {
         batteryValue = double.parse(response.body) / 100.0;
@@ -102,9 +105,12 @@ class _ConfigViewState extends State<ConfigView> {
 
   Future<void> getWifi() async {
     var ipAddress = widget.robot.ipAddress;
+
     var url = Uri.http('$ipAddress:8080', '/api/config/wifi_strength');
     var response = await http.get(Uri.parse(url.toString()));
     
+    print(response.statusCode.toString() + ': ' + response.body);
+
     if (response.statusCode == 200) {
       setState(() {
         wifiValue = double.parse(response.body) / 100.0;
@@ -117,6 +123,8 @@ class _ConfigViewState extends State<ConfigView> {
 
     var url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
     var response = await http.get(Uri.parse(url.toString()));
+
+    print(response.statusCode.toString() + ': ' + response.body);
     
     if (response.statusCode == 200) {
       setState(() {
@@ -130,6 +138,8 @@ class _ConfigViewState extends State<ConfigView> {
 
     var url = Uri.http('$ipAddress:8080', '/api/audio/language');
     var response = await http.get(Uri.parse(url.toString()));
+
+    print(response.statusCode.toString() + ': ' + response.body);
     
     if (response.statusCode == 200) {
       setState(() {
@@ -151,6 +161,8 @@ class _ConfigViewState extends State<ConfigView> {
     var url = Uri.http('$ipAddress:8080', '/api/audio/voice');
     var response = await http.get(Uri.parse(url.toString()));
     
+    print(response.statusCode.toString() + ': ' + response.body);
+
     if (response.statusCode == 200) {
       setState(() {
         voiceValues = response.body.split(',');
@@ -171,6 +183,8 @@ class _ConfigViewState extends State<ConfigView> {
 
     var url = Uri.http('$ipAddress:8080', '/api/audio/volume');
     var response = await http.get(Uri.parse(url.toString()));
+
+    print(response.statusCode.toString() + ': ' + response.body);
     
     if (response.statusCode == 200) {
       setState(() {
@@ -199,15 +213,15 @@ class _ConfigViewState extends State<ConfigView> {
       brightnessValue = bri;
     });
 
+    int bright = (bri * 255.0).round();
+
     var ipAddress = widget.robot.ipAddress;
     var url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
     var headers = {"Content-type": "application/json"};
     var response =
-        await http.post(url, headers:headers, body: {'type': 'object', 'brightness': int.parse((bri * 255.0).toString())});
+        await http.post(url, headers:headers, body: '{"brightness": $bright}');
 
-    if (response.statusCode == 200) {
-        // print("Derzeitige Stimmenlautstärke: $vol");
-    }
+    print(response.statusCode.toString() + ': ' + response.body);
   }
 
   Future<void> languageHandler(String lng) async {
@@ -218,11 +232,9 @@ class _ConfigViewState extends State<ConfigView> {
     var ipAddress = widget.robot.ipAddress;
     var url = Uri.http('$ipAddress:8080', '/api/audio/language');
     var headers = {"Content-type": "application/json"};
-    var response = await http.post(url, headers:headers, body: {'type': 'object', 'language': lng});
+    var response = await http.post(url, headers:headers, body: '{"language": "$lng"}');
 
-    if (response.statusCode == 200) {
-        // print("Derzeitige Sprache: $lng");
-    }
+    print(response.statusCode.toString() + ': ' + response.body);
   }
 
   Future<void> voiceHandler(String lng) async {
@@ -233,11 +245,9 @@ class _ConfigViewState extends State<ConfigView> {
     var ipAddress = widget.robot.ipAddress;
     var url = Uri.http('$ipAddress:8080', '/api/audio/voice');
     var headers = {"Content-type": "application/json"};
-    var response = await http.post(url, headers:headers, body: {'type': 'object', 'language': lng});
+    var response = await http.post(url, headers:headers, body: '{"voice": "$lng"}');
 
-    if (response.statusCode == 200) {
-        // print("Derzeitige Sprache: $lng");
-    }
+    print(response.statusCode.toString() + ': ' + response.body);
   }
 
   Future<void> volumeHandler(double vol) async {
@@ -245,15 +255,15 @@ class _ConfigViewState extends State<ConfigView> {
       volumeValue = vol;
     });
 
+    int volume = (vol * 100.0).round();
+
     var ipAddress = widget.robot.ipAddress;
     var url = Uri.http('$ipAddress:8080', '/api/audio/volume');
     var headers = {"Content-type": "application/json"};
     var response =
-        await http.post(url, headers:headers, body: {'type': 'object', 'volume': int.parse((vol * 100.0).toString())});
+        await http.post(url, headers:headers, body: '{"volume": $volume}');
 
-    if (response.statusCode == 200) {
-        // print("Derzeitige Stimmenlautstärke: $vol");
-      }
+    print(response.statusCode.toString() + ': ' + response.body);
   }  
 
   @override
