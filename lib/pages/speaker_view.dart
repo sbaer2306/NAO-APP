@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../providers/robot_provider.dart';
 
 import '../ui_elements/info_card.dart';
 
@@ -59,8 +61,8 @@ class _SpeakerViewState extends State<SpeakerView> {
     });
 
     var url = Uri.https('httpbin.org', 'post');
-    var response = await http
-        .post(url, body: {'type': 'Voice', 'value': vol.toString()});
+    var response =
+        await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
 
     var statusCode = response.statusCode;
     if (kDebugMode) {
@@ -73,6 +75,26 @@ class _SpeakerViewState extends State<SpeakerView> {
 
   @override
   Widget build(BuildContext context) {
+    final robotProvider = Provider.of<RobotProvider>(context, listen: false);
+    final activeRobots = robotProvider.activeItems;
+
+    Future<void> saySomething() async {
+      String textToSpeak = _speakController.text;
+
+      Map<String, String> audioObject = {
+        'text': textToSpeak,
+      };
+      print(audioObject);
+      for (int i = 0; i < activeRobots.length; i++) {
+        try {
+          await activeRobots[i].saySomething(audioObject);
+        } catch (error) {
+          print("error saying something");
+        }
+      }
+      _speakController.clear();
+    }
+
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -152,13 +174,12 @@ class _SpeakerViewState extends State<SpeakerView> {
               children: [
                 const Icon(Icons.volume_mute),
                 Expanded(
-                  child: Slider(
-                      value: volumeValue,
-                      onChanged: (value) {
-                        volumeHandler(value);
-                      },
-                  )
-                ),
+                    child: Slider(
+                  value: volumeValue,
+                  onChanged: (value) {
+                    volumeHandler(value);
+                  },
+                )),
                 const Icon(Icons.volume_up),
               ],
             ),
@@ -185,7 +206,7 @@ class _SpeakerViewState extends State<SpeakerView> {
                           RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ))),
-                  onPressed: () {},
+                  onPressed: saySomething,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: const [

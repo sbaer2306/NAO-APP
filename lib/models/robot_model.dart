@@ -88,11 +88,6 @@ class RobotModel implements RobotInterface {
     var headers = {"Content-type": "application/json"};
     var body =
         '{"enableArmsInWalkAlgorithm": true, "posture": "$posture", "speed": ${1}}';
-/*     
-    json.encode({
-      'enableArmsInWalkAlgorithm': true,
-      'posture': posture,
-    }); */
 
     if (kDebugMode) {
       try {
@@ -138,14 +133,31 @@ class RobotModel implements RobotInterface {
   @override
   Future<void> handleTajChi(bool isTajChiEnabled) async {
     var headers = {"Content-type": "application/json"};
-    var url;
-    if (isTajChiEnabled)
+    Uri url;
+    if (isTajChiEnabled) {
       url = Uri.http('$ipAddress:8080', '/api/behavior/stop_taj_chi');
-    else
+    } else {
       url = Uri.http('$ipAddress:8080', '/api/behavior/do_taj_chi');
+    }
 
     try {
       var response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Success:.');
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
+  }
+
+  @override
+  Future<void> saySomething(Object audioObject) async {
+    var headers = {"Content-type": "application/json"};
+    Uri url = Uri.http('$ipAddress:8080', '/api/aduio/tts');
+    try {
+      var response = await http.post(url, headers: headers, body: audioObject);
       if (response.statusCode == 200) {
         print('Success:.');
       } else {
