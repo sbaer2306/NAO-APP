@@ -22,8 +22,12 @@ class _SpeakerViewState extends State<SpeakerView> {
     super.initState();
   }
 
-  Enum? languageEnum;
-  Enum? voiceEnum;
+  Enum? languageEnum = Enum(
+      items: ['German', 'Japanese', 'Chinese', 'English'],
+      selectedItem: 'German');
+  Enum? voiceEnum = Enum(
+      items: ["Julia22Enhanced", "maki_n16", "naoenu", "naomnc"],
+      selectedItem: "Julia22Enhanced");
   int volumeValue = 50;
 
   @override
@@ -39,8 +43,8 @@ class _SpeakerViewState extends State<SpeakerView> {
       Object languageObject = {
         'language': lng,
       };
-
-      await activeRobots[0].setLanguage(languageObject);
+      print("changed language to: $lng");
+      //await activeRobots[0].setLanguage(languageObject);
     }
 
     Future<void> voiceHandler(String lng) async {
@@ -52,7 +56,8 @@ class _SpeakerViewState extends State<SpeakerView> {
         'language': lng,
       };
 
-      await activeRobots[0].setLanguage(voiceObject);
+      print("changed voice to: $lng");
+      //await activeRobots[0].setLanguage(voiceObject);
     }
 
     Future<void> volumeHandler(double vol) async {
