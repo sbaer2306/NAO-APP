@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:nao_app/models/robot_model.dart';
+import 'package:nao_app/providers/robot_provider.dart';
 import 'package:nao_app/ui_elements/info_card.dart';
+import 'package:provider/provider.dart';
 
 class ConfigItem extends StatelessWidget {
   const ConfigItem({Key? key, required this.children}) : super(key: key);
@@ -45,59 +48,165 @@ class ConfigTitle extends StatelessWidget {
 }
 
 class ConfigView extends StatefulWidget {
-  const ConfigView({Key? key}) : super(key: key);
+  const ConfigView({Key? key, required this.robot}) : super(key: key);
+
+  final RobotModel robot;
 
   @override
   State<StatefulWidget> createState() => _ConfigViewState();
 }
 
-class _ConfigViewState extends State<ConfigView> {
+class _ConfigViewState extends State<ConfigView> {  
+  double batteryValue = 0.5;
+  double wifiValue = 0.5;
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ipAddressController = TextEditingController();
 
-  String languageValue = "german";
-  String voiceValue = "male";
+  double brightnessValue = 0.5;
+
+  var languageValues = <String>[];
+  String languageValue = "German";
+
+  var voiceValues = <String>[];
+  String voiceValue = "naoenu";
+
   double volumeValue = 0.5;
 
   @override
   void initState() {
     super.initState();
-    _nameController.text = "";
-    _ipAddressController.text = '192.168.171.';
+    
+    getBattery();
+    getWifi();
+    _nameController.text = widget.robot.name;
+    _ipAddressController.text = widget.robot.ipAddress;
+    getBrightness();
+    getLanguage();
+    getVoice();
+    getVolume();    
   }
 
+  // Getter
+  Future<void> getBattery() async {
+    var ipAddress = widget.robot.ipAddress;
+    var url = Uri.http('$ipAddress:8080', '/api/config/battery');
+    var response = await http.get(Uri.parse(url.toString()));
+    
+    if (response.statusCode == 200) {
+      setState(() {
+        batteryValue = double.parse(response.body) / 100.0;
+      });
+    }
+  }
+
+  Future<void> getWifi() async {
+    var ipAddress = widget.robot.ipAddress;
+    var url = Uri.http('$ipAddress:8080', '/api/config/wifi_strength');
+    var response = await http.get(Uri.parse(url.toString()));
+    
+    if (response.statusCode == 200) {
+      setState(() {
+        wifiValue = double.parse(response.body) / 100.0;
+      });
+    }
+  }
+
+  Future<void> getBrightness() async {
+    var ipAddress = widget.robot.ipAddress;
+
+    var url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
+    var response = await http.get(Uri.parse(url.toString()));
+    
+    if (response.statusCode == 200) {
+      setState(() {
+        brightnessValue = double.parse(response.body) / 255.0;
+      });
+    }
+  }
+
+  Future<void> getLanguage() async {
+    var ipAddress = widget.robot.ipAddress;
+
+    var url = Uri.http('$ipAddress:8080', '/api/audio/language');
+    var response = await http.get(Uri.parse(url.toString()));
+    
+    if (response.statusCode == 200) {
+      setState(() {
+        languageValues = response.body.split(',');
+        
+        if (widget.robot.language == "") {
+          languageValue = languageValues[0];
+        }
+        else {
+          languageValue = widget.robot.language;
+        }
+      });
+    }
+  }
+
+  Future<void> getVoice() async {
+    var ipAddress = widget.robot.ipAddress;
+
+    var url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+    var response = await http.get(Uri.parse(url.toString()));
+    
+    if (response.statusCode == 200) {
+      setState(() {
+        voiceValues = response.body.split(',');
+        
+        if (widget.robot.voice == "") {
+          voiceValue = voiceValues[0];
+        }
+        else {
+          voiceValue = widget.robot.voice;
+        }
+        
+      });
+    }
+  }
+
+  Future<void> getVolume() async {
+    var ipAddress = widget.robot.ipAddress;
+
+    var url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+    var response = await http.get(Uri.parse(url.toString()));
+    
+    if (response.statusCode == 200) {
+      setState(() {
+        volumeValue = double.parse(response.body) / 100.0;
+      });
+    }
+  }
+
+  // Setter
   Future<void> nameHandler(String name) async {
     setState(() {
       _nameController.text = name;
     });
 
-    var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'type': 'Name', 'value': name});
-
-    var statusCode = response.statusCode;
-    if (kDebugMode) {
-      // print(statusCode);
-      if (statusCode == 200) {
-        // print("Derzeitiger Name: $name");
-      }
-    }
+    widget.robot.name = name;
   }
 
   Future<void> ipHandler(String ip) async {
     setState(() {
       _ipAddressController.text = ip;
     });
+  }
 
-    var url = Uri.https('httpbin.org', 'post');
+  Future<void> brightnessHandler(double bri) async {
+    setState(() {
+      brightnessValue = bri;
+    });
+
+    var ipAddress = widget.robot.ipAddress;
+    var url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
+    var headers = {"Content-type": "application/json"};
     var response =
-        await http.post(url, body: {'type': 'IP-Adresse', 'value': ip});
+        await http.post(url, headers:headers, body: {'type': 'object', 'brightness': int.parse((bri * 255.0).toString())});
 
-    var statusCode = response.statusCode;
-    if (kDebugMode) {
-      // print(statusCode);
-      if (statusCode == 200) {
-        // print("Derzeitige IP-Adresse: $ip");
-      }
+    if (response.statusCode == 200) {
+        // print("Derzeitige Stimmenlautstärke: $vol");
     }
   }
 
@@ -106,16 +215,13 @@ class _ConfigViewState extends State<ConfigView> {
       languageValue = lng;
     });
 
-    var url = Uri.https('httpbin.org', 'post');
-    var response =
-        await http.post(url, body: {'type': 'Language', 'value': lng});
+    var ipAddress = widget.robot.ipAddress;
+    var url = Uri.http('$ipAddress:8080', '/api/audio/language');
+    var headers = {"Content-type": "application/json"};
+    var response = await http.post(url, headers:headers, body: {'type': 'object', 'language': lng});
 
-    var statusCode = response.statusCode;
-    if (kDebugMode) {
-      // print(statusCode);
-      if (statusCode == 200) {
+    if (response.statusCode == 200) {
         // print("Derzeitige Sprache: $lng");
-      }
     }
   }
 
@@ -124,15 +230,13 @@ class _ConfigViewState extends State<ConfigView> {
       voiceValue = lng;
     });
 
-    var url = Uri.https('httpbin.org', 'post');
-    var response = await http.post(url, body: {'type': 'Voice', 'value': lng});
+    var ipAddress = widget.robot.ipAddress;
+    var url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+    var headers = {"Content-type": "application/json"};
+    var response = await http.post(url, headers:headers, body: {'type': 'object', 'language': lng});
 
-    var statusCode = response.statusCode;
-    if (kDebugMode) {
-      // print(statusCode);
-      if (statusCode == 200) {
-        // print("Derzeitige Stimme: $lng");
-      }
+    if (response.statusCode == 200) {
+        // print("Derzeitige Sprache: $lng");
     }
   }
 
@@ -141,18 +245,16 @@ class _ConfigViewState extends State<ConfigView> {
       volumeValue = vol;
     });
 
-    var url = Uri.https('httpbin.org', 'post');
+    var ipAddress = widget.robot.ipAddress;
+    var url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+    var headers = {"Content-type": "application/json"};
     var response =
-        await http.post(url, body: {'type': 'Voice', 'value': vol.toString()});
+        await http.post(url, headers:headers, body: {'type': 'object', 'volume': int.parse((vol * 100.0).toString())});
 
-    var statusCode = response.statusCode;
-    if (kDebugMode) {
-      // print(statusCode);
-      if (statusCode == 200) {
+    if (response.statusCode == 200) {
         // print("Derzeitige Stimmenlautstärke: $vol");
       }
-    }
-  }
+  }  
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +277,7 @@ class _ConfigViewState extends State<ConfigView> {
                 child: ConfigTitle(title: "Akku"),
               ),
             ]),
-            const ConfigItem(
+            ConfigItem(
               children: [
                 Icon(Icons.wifi),
                 SizedBox(width: 8.0),
@@ -183,7 +285,7 @@ class _ConfigViewState extends State<ConfigView> {
                   child: SizedBox(
                     height: 4.0,
                     child: LinearProgressIndicator(
-                      value: .6,
+                      value: wifiValue,
                     ),
                   ),
                 ),
@@ -194,7 +296,7 @@ class _ConfigViewState extends State<ConfigView> {
                   child: SizedBox(
                     height: 4.0,
                     child: LinearProgressIndicator(
-                      value: .6,
+                      value: batteryValue,
                     ),
                   ),
                 ),
@@ -227,12 +329,27 @@ class _ConfigViewState extends State<ConfigView> {
                   controller: _ipAddressController,
                   decoration:
                       const InputDecoration(hintText: "Gib eine IP ein"),
+                  readOnly: true,
                   onSubmitted: (value) {
                     ipHandler(value.toString());
                   },
                 ),
               ),
             ]),
+            const ConfigTitle(title: "Helligkeit"),
+            ConfigItem(
+              children: [
+                const Icon(Icons.lightbulb),
+                Expanded(
+                  child: Slider(
+                      value: brightnessValue,
+                      onChanged: (value) {
+                        brightnessHandler(value.toDouble());
+                      }),
+                ),
+                const Icon(Icons.volume_up),
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -244,24 +361,9 @@ class _ConfigViewState extends State<ConfigView> {
                         ConfigItem(children: [
                           Expanded(
                             child: DropdownButton(
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: "english",
-                                    child: Text("Englisch"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "german",
-                                    child: Text("Deutsch"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "spanish",
-                                    child: Text("Spanisch"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "chineese",
-                                    child: Text("Chinesisch"),
-                                  ),
-                                ],
+                                items: languageValues.map((d) {
+                                  return DropdownMenuItem(value: d, child: Text(d));
+                                }).toList(),
                                 onChanged: (value) {
                                   languageHandler(value.toString());
                                 },
@@ -278,16 +380,9 @@ class _ConfigViewState extends State<ConfigView> {
                         ConfigItem(children: [
                           Expanded(
                             child: DropdownButton(
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: "male",
-                                    child: Text("Männlich"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "female",
-                                    child: Text("Weiblich"),
-                                  ),
-                                ],
+                                items: voiceValues.map((d) {
+                                  return DropdownMenuItem(value: d, child: Text(d));
+                                }).toList(),
                                 onChanged: (value) {
                                   voiceHandler(value.toString());
                                 },
@@ -318,11 +413,13 @@ class _ConfigViewState extends State<ConfigView> {
             Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
-                children: const [
+                children: [
                   Expanded(
                     child: ElevatedButton(
-                      // TODO: MAD23E-70
-                      onPressed: null,
+                      onPressed: () { 
+                          Provider.of<RobotProvider>(context, listen: true).removeRobot(widget.robot);
+                          Navigator.pop(context); 
+                        },
                       child: Text("Entfernen"),
                     ),
                   ),

@@ -8,9 +8,12 @@ import 'package:nao_app/api/robot_api_interface.dart';
 
 class RobotModel implements RobotInterface {
   final String ipAddress;
-  final String name;
+  String name;
 
-  RobotModel({required this.ipAddress, this.name = ""});
+  String voice;
+  String language;
+
+  RobotModel({required this.ipAddress, this.name = "", this.voice = "", this.language = ""});
 
   Future<int> connect(String port) async {
     //Test URL
