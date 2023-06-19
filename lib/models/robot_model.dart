@@ -13,7 +13,11 @@ class RobotModel implements RobotInterface {
   String voice;
   String language;
 
-  RobotModel({required this.ipAddress, this.name = "", this.voice = "", this.language = ""});
+  RobotModel(
+      {required this.ipAddress,
+      this.name = "",
+      this.voice = "",
+      this.language = ""});
 
   Future<int> connect(String port) async {
     //Test URL
@@ -129,5 +133,26 @@ class RobotModel implements RobotInterface {
     var url = Uri.http('$ipAddress:8080', '/api/vision/video_feed');
 
     return url.toString();
+  }
+
+  @override
+  Future<void> handleTajChi(bool isTajChiEnabled) async {
+    var headers = {"Content-type": "application/json"};
+    var url;
+    if (isTajChiEnabled)
+      url = Uri.http('$ipAddress:8080', '/api/behavior/stop_taj_chi');
+    else
+      url = Uri.http('$ipAddress:8080', '/api/behavior/do_taj_chi');
+
+    try {
+      var response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Success:.');
+      } else {
+        print('${response.statusCode}: ${response.body}');
+      }
+    } catch (error) {
+      print('Error occurred: $error');
+    }
   }
 }

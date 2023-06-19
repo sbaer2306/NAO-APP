@@ -8,6 +8,7 @@ class RobotProvider extends ChangeNotifier {
   final List<RobotModel> _activeItems = [];
 
   Map<String, bool> toggleStates = {};
+  Map<String, bool> tajChiStates = {};
 
   UnmodifiableListView<RobotModel> get items => UnmodifiableListView(_items);
   UnmodifiableListView<RobotModel> get activeItems =>
@@ -16,6 +17,7 @@ class RobotProvider extends ChangeNotifier {
   void addRobot(RobotModel newRobot) {
     _items.add(newRobot);
     toggleStates[newRobot.ipAddress] = false;
+    tajChiStates[newRobot.ipAddress] = false;
     notifyListeners();
   }
 
@@ -35,6 +37,17 @@ class RobotProvider extends ChangeNotifier {
     _activeItems.remove(activeRobot);
     toggleStates[activeRobot.ipAddress] = false;
     notifyListeners();
+  }
+
+  void toggleTajChi(String robotIP) {
+    bool isTajChiEnabled = !getTajChiState(robotIP);
+
+    tajChiStates[robotIP] = isTajChiEnabled;
+    notifyListeners();
+  }
+
+  bool getTajChiState(String robotIP) {
+    return tajChiStates[robotIP] ?? false;
   }
 
   bool getToggleState(String robotIP) {

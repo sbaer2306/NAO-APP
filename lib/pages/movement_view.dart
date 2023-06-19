@@ -59,6 +59,7 @@ class MovementViewState extends State<MovementView> {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
     final activeRobots = robotProvider.activeItems;
     bool isMoving = false;
+    bool isTajChiEnabled = false;
 
     Future<void> actionMovement(String movement) async {
       String translatedMovement = translateMovement(movement);
@@ -68,6 +69,17 @@ class MovementViewState extends State<MovementView> {
         }
       } catch (error) {
         print('Error occured: $error');
+      }
+    }
+
+    Future<void> toggleTajChi() async {
+      for (int i = 0; i < activeRobots.length; i++) {
+        isTajChiEnabled =
+            robotProvider.getTajChiState(activeRobots[i].ipAddress);
+
+        await activeRobots[i].handleTajChi(isTajChiEnabled);
+
+        robotProvider.toggleTajChi(activeRobots[i].ipAddress);
       }
     }
 
@@ -140,6 +152,19 @@ class MovementViewState extends State<MovementView> {
               },
             );
           },
+        ),
+      ),
+      Center(
+        child: SizedBox(
+          height: 50,
+          width: 200,
+          child: ElevatedButton(
+            onPressed: toggleTajChi,
+            child: const Text(
+              'Taj Chi',
+              style: TextStyle(fontSize: 14),
+            ),
+          ),
         ),
       ),
       SizedBox(
