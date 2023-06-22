@@ -128,8 +128,8 @@ class RobotModel implements RobotInterface {
 
   // Getter
   Future<double> getBattery() async {
-    var url = Uri.http('$ipAddress:8080', '/api/config/battery');
-    var response = await http.get(Uri.parse(url.toString()));
+    Uri url = Uri.http('$ipAddress:8080', '/api/config/battery');
+    var response = await http.get(url);
     
     print(response.statusCode.toString() + ': ' + response.body);
 
@@ -142,8 +142,8 @@ class RobotModel implements RobotInterface {
   }
 
   Future<double> getWifi() async {
-    var url = Uri.http('$ipAddress:8080', '/api/config/wifi_strength');
-    var response = await http.get(Uri.parse(url.toString()));
+    Uri url = Uri.http('$ipAddress:8080', '/api/config/wifi_strength');
+    var response = await http.get(url);
     
     print(response.statusCode.toString() + ': ' + response.body);
 
@@ -156,8 +156,8 @@ class RobotModel implements RobotInterface {
   }
 
   Future<double> getBrightness() async {
-    var url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
-    var response = await http.get(Uri.parse(url.toString()));
+    Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
+    var response = await http.get(url);
 
     print(response.statusCode.toString() + ': ' + response.body);
     
@@ -170,8 +170,8 @@ class RobotModel implements RobotInterface {
   }
 
   Future<List<String>> getLanguage() async {
-    var url = Uri.http('$ipAddress:8080', '/api/audio/language');
-    var response = await http.get(Uri.parse(url.toString()));
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
+    var response = await http.get(url);
 
     print(response.statusCode.toString() + ': ' + response.body);
     
@@ -182,9 +182,6 @@ class RobotModel implements RobotInterface {
       if (language == "") {
         language = languageValues[0];
       }
-      else {
-        language = "German";
-      }
 
       return languageValues;
     }
@@ -194,8 +191,8 @@ class RobotModel implements RobotInterface {
   }
 
   Future<List<String>> getVoice() async {
-    var url = Uri.http('$ipAddress:8080', '/api/audio/voice');
-    var response = await http.get(Uri.parse(url.toString()));
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+    var response = await http.get(url);
     
     print(response.statusCode.toString() + ': ' + response.body);
 
@@ -204,9 +201,6 @@ class RobotModel implements RobotInterface {
       
       if (voice == "") {
         voice = voiceValues[0];
-      }
-      else {
-        voice = "naoenu";
       }
 
       return voiceValues;
@@ -217,8 +211,8 @@ class RobotModel implements RobotInterface {
   }
 
   Future<double> getVolume() async {
-    var url = Uri.http('$ipAddress:8080', '/api/audio/volume');
-    var response = await http.get(Uri.parse(url.toString()));
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+    var response = await http.get(url);
 
     print(response.statusCode.toString() + ': ' + response.body);
     
@@ -238,7 +232,7 @@ class RobotModel implements RobotInterface {
   Future<void> setBrightness(double bri) async {    
     int bright = (bri * 255.0).round();
 
-    var url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
+    Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
     var headers = {"Content-type": "application/json"};
     var response = await http.post(url, headers:headers, body: '{"brightness": $bright}');
 
@@ -246,7 +240,7 @@ class RobotModel implements RobotInterface {
   }
 
   Future<void> setLanguage(String lng) async {
-    var url = Uri.http('$ipAddress:8080', '/api/audio/language');
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
     var headers = {"Content-type": "application/json"};
     var response = await http.post(url, headers:headers, body: '{"language": "$lng"}');
 
@@ -254,7 +248,7 @@ class RobotModel implements RobotInterface {
   }
 
   Future<void> setVoice(String voice) async {
-    var url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
     var headers = {"Content-type": "application/json"};
     var response = await http.post(url, headers:headers, body: '{"voice": "$voice"}');
 
@@ -264,7 +258,7 @@ class RobotModel implements RobotInterface {
   Future<void> setVolume(double vol) async {
     int volume = (vol * 100.0).round();
 
-    var url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
     var headers = {"Content-type": "application/json"};
     var response = await http.post(url, headers:headers, body: '{"volume": $volume}');
 
