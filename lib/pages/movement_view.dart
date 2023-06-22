@@ -170,7 +170,7 @@ class MovementViewState extends State<MovementView> {
       SizedBox(
           width: double.infinity,
           child: Container(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.only(left: 20.0, top: 10.0),
               child: const Text(
                 "CONTROLS",
                 textAlign: TextAlign.start,
@@ -194,7 +194,22 @@ class MovementViewState extends State<MovementView> {
               ),
             ),
           ),
-          const SizedBox(width: 120.0),
+          const SizedBox(width: 10.0),
+          Center(
+              child: SizedBox(
+            height: 70.0,
+            width: 120,
+            child: ControlButton(
+              icon: Icons.arrow_upward,
+              onPressed: () {
+                controlMovement('Forward');
+              },
+              onReleased: () {
+                controlMovement('Stop');
+              },
+            ),
+          )),
+          const SizedBox(width: 10.0),
           Expanded(
             child: SizedBox(
               height: 70.0,
@@ -211,20 +226,6 @@ class MovementViewState extends State<MovementView> {
           ),
           const SizedBox(width: 10.0),
         ],
-      )),
-      Center(
-          child: SizedBox(
-        height: 70.0,
-        width: 120,
-        child: ControlButton(
-          icon: Icons.arrow_upward,
-          onPressed: () {
-            controlMovement('Forward');
-          },
-          onReleased: () {
-            controlMovement('Stop');
-          },
-        ),
       )),
       Expanded(
           child: Row(children: [
