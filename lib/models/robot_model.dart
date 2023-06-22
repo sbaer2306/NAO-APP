@@ -285,4 +285,143 @@ class RobotModel implements RobotInterface {
       print('Error occurred: $error');
     }
   }
+
+  // Getter
+  Future<double> getBattery() async {
+    Uri url = Uri.http('$ipAddress:8080', '/api/config/battery');
+    var response = await http.get(url);
+    
+    print(response.statusCode.toString() + ': ' + response.body);
+
+    if (response.statusCode == 200) {
+      return double.parse(response.body) / 100.0;
+    }
+    else {
+      return 0.5;
+    }
+  }
+
+  Future<double> getWifi() async {
+    Uri url = Uri.http('$ipAddress:8080', '/api/config/wifi_strength');
+    var response = await http.get(url);
+    
+    print(response.statusCode.toString() + ': ' + response.body);
+
+    if (response.statusCode == 200) {
+      return double.parse(response.body) / 100.0;
+    }
+    else {
+      return 0.5;
+    }
+  }
+
+  Future<double> getBrightness() async {
+    Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
+    var response = await http.get(url);
+
+    print(response.statusCode.toString() + ': ' + response.body);
+    
+    if (response.statusCode == 200) {
+      return double.parse(response.body) / 255.0;
+    }
+    else {
+      return 0.5;
+    }
+  }
+
+  Future<List<String>> getLanguage() async {
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
+    var response = await http.get(url);
+
+    print(response.statusCode.toString() + ': ' + response.body);
+    
+    if (response.statusCode == 200) {
+      
+      List<String> languageValues = response.body.split(',');
+      
+      if (language == "") {
+        language = languageValues[0];
+      }
+
+      return languageValues;
+    }
+    else {
+      return <String>[];
+    }
+  }
+
+  Future<List<String>> getVoice() async {
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+    var response = await http.get(url);
+    
+    print(response.statusCode.toString() + ': ' + response.body);
+
+    if (response.statusCode == 200) {
+      List<String> voiceValues = response.body.split(',');
+      
+      if (voice == "") {
+        voice = voiceValues[0];
+      }
+
+      return voiceValues;
+    }
+    else {
+      return <String>[];
+    }
+  }
+
+  Future<double> getVolume() async {
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+    var response = await http.get(url);
+
+    print(response.statusCode.toString() + ': ' + response.body);
+    
+    if (response.statusCode == 200) {
+      return double.parse(response.body) / 100.0;
+    }
+    else {
+      return 0.5;
+    }
+  }
+
+  // Setter
+  Future<void> setName(String name) async {
+    name = name;
+  }
+
+  Future<void> setBrightness(double bri) async {    
+    int bright = (bri * 255.0).round();
+
+    Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
+    var headers = {"Content-type": "application/json"};
+    var response = await http.post(url, headers:headers, body: '{"brightness": $bright}');
+
+    print(response.statusCode.toString() + ': ' + response.body);
+  }
+
+  Future<void> setLanguage(String lng) async {
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
+    var headers = {"Content-type": "application/json"};
+    var response = await http.post(url, headers:headers, body: '{"language": "$lng"}');
+
+    print(response.statusCode.toString() + ': ' + response.body);
+  }
+
+  Future<void> setVoice(String voice) async {
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+    var headers = {"Content-type": "application/json"};
+    var response = await http.post(url, headers:headers, body: '{"voice": "$voice"}');
+
+    print(response.statusCode.toString() + ': ' + response.body);
+  }
+
+  Future<void> setVolume(double vol) async {
+    int volume = (vol * 100.0).round();
+
+    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+    var headers = {"Content-type": "application/json"};
+    var response = await http.post(url, headers:headers, body: '{"volume": $volume}');
+
+    print(response.statusCode.toString() + ': ' + response.body);
+  }  
 }
