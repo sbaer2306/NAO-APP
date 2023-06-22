@@ -65,11 +65,15 @@ class _ConfigViewState extends State<ConfigView> {
 
   double brightnessValue = 0.5;
 
-  var languageValues = <String>[];
-  String languageValue = "German";
+  Enum? languageEnum = Enum(
+      items: ['German', 'Japanese', 'Chinese', 'English'],
+      selectedItem: 'German');
+  Enum? voiceEnum = Enum(
+      items: ["Julia22Enhanced", "maki_n16", "naoenu", "naomnc"],
+      selectedItem: "Julia22Enhanced");
 
-  var voiceValues = <String>[];
-  String voiceValue = "naoenu";
+  //an Frank: Verwende getVoice / getLanguage wie auch immer es dir passt, habe sie aus der SPrachseite entfernt, also
+  //Enum ist nicht notwendig.
 
   double volumeValue = 0.5;
 
@@ -115,37 +119,23 @@ class _ConfigViewState extends State<ConfigView> {
   Future<void> getLanguage() async {
     setState(() {
       widget.robot.getLanguage().then((value) => {
-        languageValues = value
-      });
-      
-      if (widget.robot.language == "") {
-        languageValue = languageValues[0];
-      }
-      else {
-        languageValue = widget.robot.language;
-      }
+        languageEnum = value
+    });
     });
   }
 
   Future<void> getVoice() async {
     setState(() {
       widget.robot.getVoice().then((value) => {
-        voiceValues = value
+        voiceEnum = value
       });
-      
-      if (widget.robot.voice == "") {
-        voiceValue = voiceValues[0];
-      }
-      else {
-        voiceValue = widget.robot.voice;
-      }
     });
   }
 
   Future<void> getVolume() async {
     setState(() {
       widget.robot.getVolume().then((value) => {
-        volumeValue = value
+        volumeValue = value.toDouble()
       });
     });
   }
@@ -175,7 +165,7 @@ class _ConfigViewState extends State<ConfigView> {
 
   Future<void> languageHandler(String lng) async {
     setState(() {
-      languageValue = lng;
+      languageEnum?.selectedItem = lng;
     });
 
     widget.robot.setLanguage(lng);
@@ -183,7 +173,7 @@ class _ConfigViewState extends State<ConfigView> {
 
   Future<void> voiceHandler(String voice) async {
     setState(() {
-      voiceValue = voice;
+      voiceEnum?.selectedItem = voice;
     });
 
     widget.robot.setVoice(voice);
@@ -302,13 +292,19 @@ class _ConfigViewState extends State<ConfigView> {
                         ConfigItem(children: [
                           Expanded(
                             child: DropdownButton(
-                                items: languageValues.map((d) {
-                                  return DropdownMenuItem(value: d, child: Text(d));
-                                }).toList(),
+                                value: languageEnum?.selectedItem ?? '',
+                                items: languageEnum != null
+                                    ? languageEnum?.items.map((value) {
+                                  return DropdownMenuItem(
+                                    value: value.toString(),
+                                    child: Text(value.toString()),
+                                  );
+                                }).toList()
+                                    : [],
                                 onChanged: (value) {
                                   languageHandler(value.toString());
                                 },
-                                value: languageValue),
+                            )
                           )
                         ])
                       ]),
@@ -321,13 +317,19 @@ class _ConfigViewState extends State<ConfigView> {
                         ConfigItem(children: [
                           Expanded(
                             child: DropdownButton(
-                                items: voiceValues.map((d) {
-                                  return DropdownMenuItem(value: d, child: Text(d));
-                                }).toList(),
+                                value: voiceEnum?.selectedItem ?? '',
+                                items: voiceEnum != null
+                                    ? voiceEnum?.items.map((value) {
+                                  return DropdownMenuItem(
+                                    value: value.toString(),
+                                    child: Text(value.toString()),
+                                  );
+                                }).toList()
+                                    : [],
                                 onChanged: (value) {
                                   voiceHandler(value.toString());
                                 },
-                                value: voiceValue),
+                            )
                           )
                         ]),
                       ]),

@@ -44,7 +44,14 @@ class _SpeakerViewState extends State<SpeakerView> {
         'language': lng,
       };
       print("changed language to: $lng");
-      //await activeRobots[0].setLanguage(languageObject);
+      for (int i = 0; i < activeRobots.length; i++) {
+        try {
+          print("before backend function");
+          await activeRobots[i].setLanguage(languageObject);
+        } catch (error) {
+          print("error saying something");
+        }
+      }
     }
 
     Future<void> voiceHandler(String lng) async {
@@ -53,11 +60,18 @@ class _SpeakerViewState extends State<SpeakerView> {
       });
 
       Object voiceObject = {
-        'language': lng,
+        'voice': lng,
       };
 
       print("changed voice to: $lng");
-      //await activeRobots[0].setLanguage(voiceObject);
+      for (int i = 0; i < activeRobots.length; i++) {
+        try {
+          print("before backend function");
+          await activeRobots[i].setVoice(voiceObject);
+        } catch (error) {
+          print("error saying something");
+        }
+      }
     }
 
     Future<void> volumeHandler(double vol) async {
@@ -68,8 +82,14 @@ class _SpeakerViewState extends State<SpeakerView> {
       Object volumeObject = {
         'volume': vol,
       };
-
-      await activeRobots[0].setVolume(volumeObject);
+      for (int i = 0; i < activeRobots.length; i++) {
+        try {
+          print("before backend function");
+          await activeRobots[i].setVolume(volumeObject);
+        } catch (error) {
+          print("error saying something");
+        }
+      }
     }
 
     Future<void> saySomething() async {
@@ -81,6 +101,7 @@ class _SpeakerViewState extends State<SpeakerView> {
       print(audioObject);
       for (int i = 0; i < activeRobots.length; i++) {
         try {
+          print("before backend function");
           await activeRobots[i].saySomething(audioObject);
         } catch (error) {
           print("error saying something");
@@ -88,14 +109,13 @@ class _SpeakerViewState extends State<SpeakerView> {
       }
       _speakController.clear();
     }
-
+/*
     Future<void> getVolume() async {
       int volume = await activeRobots[0].getVolume();
       setState(() {
         this.volumeValue = volume;
       });
     }
-
     Future<void> getLanguage() async {
       Enum languageEnum = await activeRobots[0].getLanguage();
       setState(() {
@@ -109,7 +129,7 @@ class _SpeakerViewState extends State<SpeakerView> {
         this.voiceEnum = voiceEnum;
       });
     }
-
+*/
     return SingleChildScrollView(
       child: Column(
         children: [
