@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:nao_app/api/robot_api_interface.dart';
+import 'package:ssh2/ssh2.dart';
 
 class Enum {
   List<String> items = [];
@@ -26,27 +27,54 @@ class RobotModel implements RobotInterface {
       this.voice = "",
       this.language = ""});
 
-  Future<int> connect(String port) async {
+  Future<int> connect(String port, String username, String pw) async {
+    var client = new SSHClient(
+      host: ipAddress,
+      port: 22,
+      username: username,
+      passwordOrKey: pw,
+    );
+
+    var result = '';
+
+    try {
+      result = await client.connect() ?? 'Null result';
+
+      if (result == "session_connected") {
+
+        await client.execute("wget https://github.com/sbaer2306/NAO-APP-Pythonserver-API/archive/refs/heads/main.zip\n");
+        await client.execute("unzip -o main.zip\n");
+        await client.execute("pip install --user nao flask\n");
+        await client.execute("python NAO-APP-Pythonserver-API-main/app.py & \n");
+      }
+      else {
+        print("object");
+      }
+      //await client.disconnectSFTP();
+      await client.disconnect();
+    }catch(error){if (kDebugMode) {
+      print(error);
+    }}
     //Test URL
-    var url = Uri.https('httpbin.org', 'post');
+    //var url = Uri.https('httpbin.org', 'post');
     //NAO URL
-    //var url = Uri.http('$ipAddress:8080', '/api/connect');
+    var url = Uri.http('$ipAddress:8080', '/api/connect');
 
     final headers = {"Content-type": "application/json"};
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
 
     //TEST response
-    final response = await http.post(url, body: {'name': 'test'}).timeout(
+/*     final response = await http.post(url, body: {'name': 'test'}).timeout(
         const Duration(seconds: 10), onTimeout: () {
       return http.Response('statusCode', 408);
-    });
+    }); */
 
     //NAO response
-/*     final response = await http
+    final response = await http
         .post(url, headers: headers, body: json)
         .timeout(const Duration(seconds: 10), onTimeout: () {
       return http.Response('statusCode', 408);
-    }); */
+    });
 
     return response.statusCode;
   }
