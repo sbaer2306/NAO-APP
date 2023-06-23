@@ -303,7 +303,7 @@ class _ConfigViewState extends State<ConfigView> {
             const ConfigTitle(title: "Helligkeit"),
             ConfigItem(
               children: [
-                const Icon(Icons.lightbulb),
+                const Icon(Icons.lightbulb_outline),
                 Expanded(
                   child: Slider(
                       value: brightnessValue,
@@ -311,7 +311,7 @@ class _ConfigViewState extends State<ConfigView> {
                         brightnessHandler(value.toDouble());
                       }),
                 ),
-                const Icon(Icons.volume_up),
+                const Icon(Icons.lightbulb),
               ],
             ),
             Row(
