@@ -17,6 +17,7 @@ dependencies:
   animated_check: ^1.0.5
   mockito: ^5.4.0
   flutter_mjpeg: ^2.0.3
+  ssh2: ^2.2.3
 
 dev_dependencies:
   flutter_test:

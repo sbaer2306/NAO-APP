@@ -75,7 +75,7 @@ class _ConfigViewState extends State<ConfigView> {
   //an Frank: Verwende getVoice / getLanguage wie auch immer es dir passt, habe sie aus der SPrachseite entfernt, also
   //Enum ist nicht notwendig.
 
-  double volumeValue = 0.5;
+  int volumeValue = 50;
 
   @override
   void initState() {
@@ -135,7 +135,7 @@ class _ConfigViewState extends State<ConfigView> {
   Future<void> getVolume() async {
     setState(() {
       widget.robot.getVolume().then((value) => {
-        volumeValue = value.toDouble()
+        volumeValue = value.toInt()
       });
     });
   }
@@ -164,28 +164,61 @@ class _ConfigViewState extends State<ConfigView> {
   }
 
   Future<void> languageHandler(String lng) async {
-    setState(() {
-      languageEnum?.selectedItem = lng;
-    });
+      setState(() {
+        languageEnum?.selectedItem = lng;
+      });
 
-    widget.robot.setLanguage(lng);
-  }
+      Object languageObject = {
+        'language': lng,
+      };
+      print("changed language to: $lng");
+      
+      try {
+        print("before backend function");
+        await widget.robot.setLanguage(languageObject);
+      } catch (error) {
+        print("error saying something");
+      }
+      
+    }
 
-  Future<void> voiceHandler(String voice) async {
-    setState(() {
-      voiceEnum?.selectedItem = voice;
-    });
+  Future<void> voiceHandler(String lng) async {
+      setState(() {
+        voiceEnum?.selectedItem = lng;
+      });
 
-    widget.robot.setVoice(voice);
-  }
+      Object voiceObject = {
+        'voice': lng,
+      };
+
+      print("changed voice to: $lng");
+      
+      try {
+        print("before backend function");
+        await widget.robot.setVoice(voiceObject);
+      } catch (error) {
+        print("error voice handler");
+      }
+      
+    }
 
   Future<void> volumeHandler(double vol) async {
-    setState(() {
-      volumeValue = vol;
-    });
+      setState(() {
+        volumeValue = vol.toInt();
+      });
 
-    widget.robot.setVolume(vol);
-  }  
+      Object volumeObject = {
+        'volume': vol,
+      };
+      
+      try {
+        print("before backend function");
+        await widget.robot.setVolume(volumeObject);
+      } catch (error) {
+        print("error volume handler");
+      }
+      
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -342,10 +375,13 @@ class _ConfigViewState extends State<ConfigView> {
                 const Icon(Icons.volume_mute),
                 Expanded(
                   child: Slider(
-                      value: volumeValue,
-                      onChanged: (value) {
-                        volumeHandler(value.toDouble());
-                      }),
+                    value: volumeValue.toDouble(),
+                    min: 0,
+                    max: 100,
+                    divisions: 100,
+                    onChanged: (value) {
+                      volumeHandler(value);
+                    }),
                 ),
                 const Icon(Icons.volume_up),
               ],

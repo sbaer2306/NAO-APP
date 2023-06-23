@@ -1,10 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:nao_app/api/robot_api_interface.dart';
+import 'package:ssh2/ssh2.dart';
 
 class Enum {
   List<String> items = [];
@@ -28,66 +27,28 @@ class RobotModel implements RobotInterface {
 
   Future<int> connect(String port) async {
     //Test URL
-    var url = Uri.https('httpbin.org', 'post');
+    //var url = Uri.https('httpbin.org', 'post');
     //NAO URL
-    //var url = Uri.http('$ipAddress:8080', '/api/connect');
+    var url = Uri.http('$ipAddress:8080', '/api/connect');
 
     final headers = {"Content-type": "application/json"};
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
 
     //TEST response
-    final response = await http.post(url, body: {'name': 'test'}).timeout(
+/*     final response = await http.post(url, body: {'name': 'test'}).timeout(
         const Duration(seconds: 10), onTimeout: () {
-      return http.Response('statusCode', 408);
-    });
-
-    //NAO response
-/*     final response = await http
-        .post(url, headers: headers, body: json)
-        .timeout(const Duration(seconds: 10), onTimeout: () {
       return http.Response('statusCode', 408);
     }); */
 
+    //NAO response
+    final response = await http
+        .post(url, headers: headers, body: json)
+        .timeout(const Duration(seconds: 10), onTimeout: () {
+      return http.Response('statusCode', 408);
+    });
+
     return response.statusCode;
-  }
-
-/*   RobotModel copyWith({
-    String? ipAddress,
-  }) {
-    return RobotModel(
-      ipAddress: ipAddress ?? this.ipAddress,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'IP': ipAddress,
-    };
-  }
-
-  factory RobotModel.fromMap(Map<String, dynamic> map) {
-    return RobotModel(
-      ipAddress: map['IP'] as String,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory RobotModel.fromJson(String source) =>
-      RobotModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() => 'RobotModel(IP: $ipAddress)';
-
-  @override
-  bool operator ==(covariant RobotModel other) {
-    if (identical(this, other)) return true;
-
-    return other.ipAddress == ipAddress;
-  }
-
-  @override
-  int get hashCode => ipAddress.hashCode; */
+  } 
 
   @override
   Future<void> setPosture(String posture) async {
@@ -258,29 +219,6 @@ class RobotModel implements RobotInterface {
       print('Error occurred: $error');
     }
   }
- // tems: ["Julia22Enhanced", "maki_n16", "naoenu", "naomnc"],
-
-  /*
-  @override
-  Future<int> getVolume() async {
-    var headers = {"Content-type": "application/json"};
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
-
-    try {
-      var response = await http.get(url, headers: headers);
-      if (response.statusCode == 200) {
-        print('Success:.');
-        var data = jsonDecode(response.body);
-        return Future.value(data);
-      } else {
-        print('${response.statusCode}: ${response.body}');
-      }
-    } catch (error) {
-      print('Error occurred: $error');
-    }
-    return Future.value(0);
-  }
-  */
 
   @override
   Future<void> setVolume(Object volumeObject) async {
@@ -307,7 +245,7 @@ class RobotModel implements RobotInterface {
     print(response.statusCode.toString() + ': ' + response.body);
 
     if (response.statusCode == 200) {
-      return double.parse(response.body) / 100.0;
+      return jsonDecode(response.body)['battery'].toDouble() / 100.0;
     }
     else {
       return 0.5;
@@ -321,7 +259,7 @@ class RobotModel implements RobotInterface {
     print(response.statusCode.toString() + ': ' + response.body);
 
     if (response.statusCode == 200) {
-      return double.parse(response.body) / 100.0;
+      return jsonDecode(response.body)['strength'].toDouble() / 100.0;
     }
     else {
       return 0.5;
@@ -335,57 +273,12 @@ class RobotModel implements RobotInterface {
     print(response.statusCode.toString() + ': ' + response.body);
     
     if (response.statusCode == 200) {
-      return double.parse(response.body) / 255.0;
+      return jsonDecode(response.body)['brightnesss'].toDouble() / 255.0;
     }
     else {
       return 0.5;
     }
   }
-
-  /*
-  Future<List<String>> getLanguage() async {
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
-    var response = await http.get(url);
-
-    print(response.statusCode.toString() + ': ' + response.body);
-    
-    if (response.statusCode == 200) {
-      
-      List<String> languageValues = response.body.split(',');
-      
-      if (language == "") {
-        language = languageValues[0];
-      }
-
-      return languageValues;
-    }
-    else {
-      return <String>[];
-    }
-  }
-  */
-/*
-  Future<List<String>> getVoice() async {
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
-    var response = await http.get(url);
-    
-    print(response.statusCode.toString() + ': ' + response.body);
-
-    if (response.statusCode == 200) {
-      List<String> voiceValues = response.body.split(',');
-      
-      if (voice == "") {
-        voice = voiceValues[0];
-      }
-
-      return voiceValues;
-    }
-    else {
-      return <String>[];
-    }
-  }
-
- */
 
   Future<double> getVolume() async {
     Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
@@ -394,7 +287,7 @@ class RobotModel implements RobotInterface {
     print(response.statusCode.toString() + ': ' + response.body);
     
     if (response.statusCode == 200) {
-      return double.parse(response.body) / 100.0;
+      return jsonDecode(response.body)['volume'].toDouble() / 100.0;
     }
     else {
       return 0.5;
@@ -414,34 +307,4 @@ class RobotModel implements RobotInterface {
 
     print(response.statusCode.toString() + ': ' + response.body);
   }
-/*
-
-  Future<void> setLanguage(String lng) async {
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
-    var headers = {"Content-type": "application/json"};
-    var response = await http.post(url, headers:headers, body: '{"language": "$lng"}');
-
-    print(response.statusCode.toString() + ': ' + response.body);
-  }
-*/
-  /*
-  Future<void> setVoice(String voice) async {
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
-    var headers = {"Content-type": "application/json"};
-    var response = await http.post(url, headers:headers, body: '{"voice": "$voice"}');
-
-    print(response.statusCode.toString() + ': ' + response.body);
-  }
-*/
-  /*
-  Future<void> setVolume(double vol) async {
-    int volume = (vol * 100.0).round();
-
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
-    var headers = {"Content-type": "application/json"};
-    var response = await http.post(url, headers:headers, body: '{"volume": $volume}');
-
-    print(response.statusCode.toString() + ': ' + response.body);
-  }
-  */
 }
