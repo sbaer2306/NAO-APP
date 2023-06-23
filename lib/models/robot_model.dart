@@ -26,7 +26,7 @@ class RobotModel implements RobotInterface {
       this.language = ""});
 
   Future<int> connect(String port, String username, String pw) async {
-    var client = new SSHClient(
+/*     var client = new SSHClient(
       host: ipAddress,
       port: 22,
       username: username,
@@ -52,7 +52,7 @@ class RobotModel implements RobotInterface {
       await client.disconnect();
     }catch(error){if (kDebugMode) {
       print(error);
-    }}
+    }} */
     //Test URL
     //var url = Uri.https('httpbin.org', 'post');
     //NAO URL
