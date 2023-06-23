@@ -128,7 +128,20 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                           LoadingAnimationWidget.staggeredDotsWave(
                             color: Theme.of(context).primaryColor,
                             size: 100,
-                          )
+                          ),
+                          ElevatedButton(
+                              style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ))),
+                              onPressed: () {
+                                  setState(() {
+                                  _isLoading = false;
+                                  });
+                                },
+                              child: const Text("Abbrechen"))
                         ],
                       )
                     : SizedBox(
