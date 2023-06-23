@@ -25,7 +25,34 @@ class RobotModel implements RobotInterface {
       this.voice = "",
       this.language = ""});
 
-  Future<int> connect(String port) async {
+  Future<int> connect(String port, String username, String pw) async {
+    var client = new SSHClient(
+      host: ipAddress,
+      port: 22,
+      username: username,
+      passwordOrKey: pw,
+    );
+
+    var result = '';
+
+    try {
+      result = await client.connect() ?? 'Null result';
+
+      if (result == "session_connected") {
+
+        await client.execute("wget https://github.com/sbaer2306/NAO-APP-Pythonserver-API/archive/refs/heads/main.zip\n");
+        await client.execute("unzip -o main.zip\n");
+        await client.execute("pip install --user nao flask\n");
+        await client.execute("python NAO-APP-Pythonserver-API-main/app.py & \n");
+      }
+      else {
+        print("object");
+      }
+      //await client.disconnectSFTP();
+      await client.disconnect();
+    }catch(error){if (kDebugMode) {
+      print(error);
+    }}
     //Test URL
     //var url = Uri.https('httpbin.org', 'post');
     //NAO URL

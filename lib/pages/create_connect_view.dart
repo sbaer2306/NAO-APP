@@ -18,6 +18,9 @@ class _CreateConnectPageState extends State<CreateConnectPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ipAddressController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _pwController = TextEditingController();
+
 
   bool _isLoading = false;
 
@@ -41,10 +44,13 @@ class _CreateConnectPageState extends State<CreateConnectPage>
     }
 
     Future<int> connectToNao(RobotModel robot) async {
+      print(_usernameController.text);
+      print(_pwController.text);
+
       setState(() {
         _isLoading = true;
       });
-      return robot.connect("9559");
+      return robot.connect("9559", _usernameController.text, _pwController.text );
     }
 
     return Scaffold(
@@ -67,14 +73,14 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                     title: "Verbinde deinen NAO",
                     description:
                         "Mit Eingabe der IP-Adresse vom NAO kannst du eine Verbindung herstellen. \nOptional kannst du deinem NAO einen Namen geben"),
-                const Headline(title: "Name"),
+                const Headline(title: "Nao-Name"),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
                     controller: _nameController,
                     decoration: const InputDecoration(
                         filled: true,
-                        hintText: "Gib hier deinen gewünschten Namen ein",
+                        hintText: "Gib hier deinen gewünschten Namen für die APP ein",
                         fillColor: Color(0xfffef7ff)),
                   ),
                 ),
@@ -87,6 +93,28 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                     decoration: const InputDecoration(
                         filled: true,
                         hintText: "Gib hier die IP-Adresse ein",
+                        fillColor: Color(0xfffef7ff)),
+                  ),
+                ),
+                const Headline(title: "Benutzername"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextField(
+                    controller: _usernameController,
+                    decoration: const InputDecoration(
+                        filled: true,
+                        hintText: "Gib hier den SSH-Benutzernamen ein",
+                        fillColor: Color(0xfffef7ff)),
+                  ),
+                ),
+                const Headline(title: "Passwort"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextField(
+                    controller: _pwController,
+                    decoration: const InputDecoration(
+                        filled: true,
+                        hintText: "Gib hier das Passwort für die SSH-Benutzer ein",
                         fillColor: Color(0xfffef7ff)),
                   ),
                 ),
