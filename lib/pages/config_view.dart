@@ -77,20 +77,6 @@ class _ConfigViewState extends State<ConfigView> {
 
   int volumeValue = 50;
 
-  @override
-  void initState() {
-    super.initState();
-    
-    getBattery();
-    getWifi();
-    _nameController.text = widget.robot.name;
-    _ipAddressController.text = widget.robot.ipAddress;
-    getBrightness();
-    getLanguage();
-    getVoice();
-    getVolume();    
-  }
-
   // Getter
   Future<void> getBattery() async {
     setState(() {
@@ -174,7 +160,6 @@ class _ConfigViewState extends State<ConfigView> {
       print("changed language to: $lng");
       
       try {
-        print("before backend function");
         await widget.robot.setLanguage(languageObject);
       } catch (error) {
         print("error saying something");
@@ -182,19 +167,18 @@ class _ConfigViewState extends State<ConfigView> {
       
     }
 
-  Future<void> voiceHandler(String lng) async {
+  Future<void> voiceHandler(String voice) async {
       setState(() {
-        voiceEnum?.selectedItem = lng;
+        voiceEnum?.selectedItem = voice;
       });
 
       Object voiceObject = {
-        'voice': lng,
+        'voice': voice,
       };
 
-      print("changed voice to: $lng");
+      print("changed voice to: $voice");
       
       try {
-        print("before backend function");
         await widget.robot.setVoice(voiceObject);
       } catch (error) {
         print("error voice handler");
@@ -212,7 +196,6 @@ class _ConfigViewState extends State<ConfigView> {
       };
       
       try {
-        print("before backend function");
         await widget.robot.setVolume(volumeObject);
       } catch (error) {
         print("error volume handler");
@@ -222,6 +205,16 @@ class _ConfigViewState extends State<ConfigView> {
 
   @override
   Widget build(BuildContext context) {
+
+    getBattery();
+    getWifi();
+    _nameController.text = widget.robot.name;
+    _ipAddressController.text = widget.robot.ipAddress;
+    getBrightness();
+    getLanguage();
+    getVoice();
+    getVolume();    
+
     return Scaffold(
         appBar: AppBar(title: const Text("Konfiguration")),
         body: SingleChildScrollView(
