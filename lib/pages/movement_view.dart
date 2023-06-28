@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,6 @@ import '../ui_elements/info_card.dart';
 
 class MovementView extends StatefulWidget {
   const MovementView({Key? key}) : super(key: key);
-
   @override
   MovementViewState createState() => MovementViewState();
 }
