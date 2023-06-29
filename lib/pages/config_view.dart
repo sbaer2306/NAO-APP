@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'package:nao_app/models/robot_model.dart';
 import 'package:nao_app/providers/robot_provider.dart';
 import 'package:nao_app/ui_elements/info_card.dart';
