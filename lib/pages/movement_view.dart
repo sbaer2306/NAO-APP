@@ -17,7 +17,7 @@ class MovementViewState extends State<MovementView> {
     'Hinsetzen',
     'Bauchlage',
     'Rückenlage',
-    "Hinknien",
+    "Hinknieen",
     'Entspannt hinsetzen',
     'Initialposition',
     'Neutrale Position',
@@ -323,7 +323,8 @@ class _ControlButtonState extends State<ControlButton> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Material(
+        child: GestureDetector(
       onTapDown: (_) {
         setState(() {
           _isPressed = true;
@@ -365,6 +366,6 @@ class _ControlButtonState extends State<ControlButton> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

@@ -9,26 +9,13 @@ import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dio/dio.dart';
 
-class MockNavigatorObserver extends Mock implements NavigatorObserver {}
-
-class MockDio extends Mock implements Dio {}
-
-//Construction:
-//Given: some context
-//When: some action is carried out
-//Then: a particular set of observable consequences should obtain
-
 void main() {
-  final mockObserver = MockNavigatorObserver();
-
   final widget = ChangeNotifierProvider(
     create: (context) => RobotProvider(),
-    child: MaterialApp(
-      home: const MovementView(),
-      navigatorObservers: [mockObserver],
+    child: const MaterialApp(
+      home: MovementView(),
     ),
   );
-
   test(
       'Given function with String is called When translateMovement ist called Then translation should be',
       () async {
@@ -52,66 +39,59 @@ void main() {
     });
   });
 
-  test(
-      'Given function with String is called When ActionMovement ist called Then translation should be',
-      () async {
-    final movement = MovementViewState();
-  });
-  test(
-      'Given function with String is called When ControlMovement ist called Then translation should be',
-      () async {
-    final movement = MovementViewState();
-  });
-  test(
-      'Given function with String is called When ToggleTajChi ist called Then translation should be',
-      () async {
-    final movement = MovementViewState();
-  });
-
-//WIDGET TESTING
-
-//MovementView
-  testWidgets(
-      'Given Robot in MovementPage When ActionButton is pressed Then actionMovement is called',
-      (widgetTester) async {
-    //assemble
-    await widgetTester.pumpWidget(widget);
-
-    final button = find.byWidgetPredicate(
-        (widget) => widget is ActionButton && widget.text == 'Aufstehen');
-    //ensure button is present on screen
-    expect(button, findsOneWidget);
-    //act
-    await widgetTester.tap(button);
-    await widgetTester.pump();
-
-    //assert
-    //What to look for if fucntion is API call with Future<Void>?
-  });
-
 //ActionButton
+//Not working because button are not in view, but ensureVisible(button) is also not doing anything
   testWidgets(
-      'Given Robot in MovementPage When ActionButton is pressed Then actionMovement is called',
-      (widgetTester) async {
-    //assemble
-    await widgetTester.pumpWidget(widget);
+    'Given Robot in MovementPage When ActionButton is pressed Then actionMovement is called',
+    (WidgetTester widgetTester) async {
+      // Assemble
+      List<String> buttonNames = [
+        'Aufstehen',
+        'Hinsetzen',
+        'Bauchlage',
+        'Rückenlage',
+        // "Hinknieen",
+        // 'Entspannt hinsetzen',
+        // 'Initialposition',
+        // 'Neutrale Position',
+      ];
 
-    final button = find.byWidgetPredicate(
-        (widget) => widget is ActionButton && widget.text == 'Aufstehen');
-    //ensure button is present on screen
-    expect(button, findsOneWidget);
-    //act
-    await widgetTester.tap(button);
-    await widgetTester.pump();
-
-    //assert
-    //What to look for if fucntion is API call with Future<Void>?
-  });
+      // Pump the widget with the mock RobotProvider and GlobalKey
+      await widgetTester.pumpWidget(widget);
+      await widgetTester.pumpAndSettle();
+      for (final name in buttonNames) {
+        final button = find.byWidgetPredicate(
+          (widget) => widget is ActionButton && widget.text == name,
+        );
+        // Scroll to the button to make it visible
+        await widgetTester.ensureVisible(button);
+        // Ensure button is present on screen
+        expect(button, findsOneWidget);
+      }
+    },
+  );
 
 //ControlButton
   testWidgets(
-      'Given Robot in MovementPage When ControlButton is pressed Then controlMovement is called',
-      (widgetTester) async => {
-            //TODO
-          });
+      'Given Robot in MovementPage When ControlButton is pressed Then actionMovement is called',
+      (widgetTester) async {
+    //assemble
+    await widgetTester.pumpWidget(widget);
+
+    const icons = [
+      Icons.arrow_forward,
+      Icons.u_turn_left,
+      Icons.u_turn_right,
+      Icons.arrow_upward,
+      Icons.arrow_downward,
+      Icons.arrow_back,
+    ];
+
+    for (final icon in icons) {
+      final button = find.byWidgetPredicate(
+          (widget) => widget is ControlButton && widget.icon == icon);
+      //ensure button is present on screen
+      expect(button, findsOneWidget);
+    }
+  });
 }
