@@ -26,7 +26,7 @@ class RobotModel implements RobotInterface {
       this.language = ""});
 
   Future<int> connect(String port, String username, String pw) async {
-/*     var client = new SSHClient(
+     var client = new SSHClient(
       host: ipAddress,
       port: 22,
       username: username,
@@ -41,18 +41,18 @@ class RobotModel implements RobotInterface {
       if (result == "session_connected") {
 
         await client.execute("wget https://github.com/sbaer2306/NAO-APP-Pythonserver-API/archive/refs/heads/main.zip\n");
-        await client.execute("unzip -o main.zip\n");
+        await client.execute("unzip -o main.zip && rm main.zip\n");
         await client.execute("pip install --user nao flask\n");
-        await client.execute("python NAO-APP-Pythonserver-API-main/app.py & \n");
+        await client.execute("PYTHONPATH=/opt/aldebaran/lib/python2.7/site-packages nohup /usr/bin/python2 /data/home/nao/NAO-APP-Pythonserver-API-main/app.py > log.txt 2>&1 &\n");
       }
       else {
         print("object");
       }
       //await client.disconnectSFTP();
-      await client.disconnect();
+      //await client.disconnect();
     }catch(error){if (kDebugMode) {
       print(error);
-    }} */
+    }}
     //Test URL
     //var url = Uri.https('httpbin.org', 'post');
     //NAO URL
@@ -73,6 +73,7 @@ class RobotModel implements RobotInterface {
         .timeout(const Duration(seconds: 10), onTimeout: () {
       return http.Response('statusCode', 408);
     });
+
 
     return response.statusCode;
   } 

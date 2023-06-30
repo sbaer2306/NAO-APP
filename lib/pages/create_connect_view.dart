@@ -96,7 +96,7 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                         fillColor: Color(0xfffef7ff)),
                   ),
                 ),
-                /* const Headline(title: "Benutzername"),
+                 const Headline(title: "Benutzername"),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
@@ -117,7 +117,7 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                         hintText: "Gib hier das Passwort für die SSH-Benutzer ein",
                         fillColor: Color(0xfffef7ff)),
                   ),
-                ), */
+                ),
                 const SizedBox(
                   height: 50,
                 ),
