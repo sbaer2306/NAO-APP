@@ -27,7 +27,7 @@ class RobotModel implements RobotInterface {
 
   Future<int> connect(String port, String username, String pw) async {
     
-    installBackendOnNAO(username, pw);
+    await installBackendOnNAO(username, pw);
 
     //NAO URL
     var url = Uri.http('$ipAddress:8080', '/api/connect');
@@ -47,7 +47,8 @@ class RobotModel implements RobotInterface {
   }
 
   Future<void> installBackendOnNAO(String username, String pw) async{
-    var client = SSHClient(
+    // ignore: unnecessary_new
+    var client = new SSHClient(
       host: ipAddress,
       port: 22,
       username: username,
