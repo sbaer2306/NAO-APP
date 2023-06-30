@@ -1,9 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:nao_app/api/robot_api_interface.dart';
-import 'package:ssh2/ssh2.dart';
 
 class Enum {
   List<String> items = [];
@@ -56,10 +53,7 @@ class RobotModelTest implements RobotInterface {
     //Test URL
     //var url = Uri.https('httpbin.org', 'post');
     //NAO URL
-    var url = Uri.http('$ipAddress:8080', '/api/connect');
 
-    final headers = {"Content-type": "application/json"};
-    var json = '{"ip_address": "$ipAddress", "port": "$port"}';
 
     //TEST response
 /*     final response = await http.post(url, body: {'name': 'test'}).timeout(
@@ -76,16 +70,13 @@ class RobotModelTest implements RobotInterface {
     });
     return response.statusCode;
     */
-    print("Connected");
+
     return 200;
   } 
 
   @override
   Future<void> setPosture(String posture) async {
-    var url = Uri.http('$ipAddress:8080', '/api/move/posture');
-    var headers = {"Content-type": "application/json"};
-    var body =
-        '{"enableArmsInWalkAlgorithm": true, "posture": "$posture", "speed": ${1}}';
+
 
     /*
     if (kDebugMode) {
@@ -102,15 +93,12 @@ class RobotModelTest implements RobotInterface {
     }
     */
 
-    print("Posture set");
+
   }
 
   @override
   Future<void> move(Object moveObject) async {
-    var url = Uri.http('$ipAddress:8080', '/api/move/movement');
-    var headers = {"Content-type": "application/json"};
-    var body = json.encode(moveObject);
-    
+
     /*
     if (kDebugMode) {
       try {
@@ -126,7 +114,7 @@ class RobotModelTest implements RobotInterface {
       }
     }
     */
-    print("Movement set");
+
   }
 
   @override
@@ -138,13 +126,6 @@ class RobotModelTest implements RobotInterface {
 
   @override
   Future<void> handleTajChi(bool isTajChiEnabled) async {
-    var headers = {"Content-type": "application/json"};
-    Uri url;
-    if (isTajChiEnabled) {
-      url = Uri.http('$ipAddress:8080', '/api/behavior/stop_taj_chi');
-    } else {
-      url = Uri.http('$ipAddress:8080', '/api/behavior/do_taj_chi');
-    }
 
     /*
     try {
@@ -158,14 +139,11 @@ class RobotModelTest implements RobotInterface {
       print('Error occurred: $error');
     }
     */
-    print("TajChi activated/deactivated");
   }
 
   @override
   Future<void> saySomething(Object audioObject) async {
-    var headers = {"Content-type": "application/json"};
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/tts');
-    var bodyObj = json.encode(audioObject);
+
     
     /*
     try {
@@ -181,13 +159,12 @@ class RobotModelTest implements RobotInterface {
       print('Error occurred: $error');
     }
     */
-    print("saySomething called");
+
   }
 
   @override
   Future<Enum> getLanguage() async {
-    var headers = {"Content-type": "application/json"};
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
+
 
     /*
     try {
@@ -208,10 +185,8 @@ class RobotModelTest implements RobotInterface {
   }
 
 
-  @override
   Future<Enum> getVoice() async {
-    var headers = {"Content-type": "application/json"};
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
+
     /*
     try {
       var response = await http.get(url, headers: headers);
@@ -232,9 +207,7 @@ class RobotModelTest implements RobotInterface {
 
   @override
   Future<void> setLanguage(Object languageObject) async {
-    var headers = {"Content-type": "application/json"};
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/language');
-    var langObj = json.encode(languageObject);
+
     
     /*
     try {
@@ -249,15 +222,13 @@ class RobotModelTest implements RobotInterface {
       print('Error occurred: $error');
     }
     */
-    print("Language set");
+
   }
 
 
   @override
   Future<void> setVoice(Object voiceObject) async {
-    var headers = {"Content-type": "application/json"};
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
-    var bodyObj = json.encode(voiceObject);
+
     
     /*
     try {
@@ -272,14 +243,12 @@ class RobotModelTest implements RobotInterface {
     }
     */
 
-    print("Voice set");
+
   }
 
   @override
   Future<void> setVolume(Object volumeObject) async {
-    var headers = {"Content-type": "application/json"};
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
-    var bodyObj = json.encode(volumeObject);
+
     
     /*
     try {
@@ -294,12 +263,12 @@ class RobotModelTest implements RobotInterface {
     }
     */
 
-    print("Volume set");
+
   }
 
   // Getter
   Future<double> getBattery() async {
-    Uri url = Uri.http('$ipAddress:8080', '/api/config/battery');
+
     /*
     var response = await http.get(url);
     
@@ -317,7 +286,7 @@ class RobotModelTest implements RobotInterface {
   }
 
   Future<double> getWifi() async {
-    Uri url = Uri.http('$ipAddress:8080', '/api/config/wifi_strength');
+
     /*
     var response = await http.get(url);
     
@@ -334,7 +303,7 @@ class RobotModelTest implements RobotInterface {
   }
 
   Future<double> getBrightness() async {
-    Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
+
     /*
     var response = await http.get(url);
 
@@ -351,7 +320,7 @@ class RobotModelTest implements RobotInterface {
   }
 
   Future<double> getVolume() async {
-    Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
+
     /*
     var response = await http.get(url);
 
@@ -372,14 +341,6 @@ class RobotModelTest implements RobotInterface {
   }
 
   Future<void> setBrightness(double bri) async {    
-    int bright = (bri * 255.0).round();
-    /*
-    Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
-    var headers = {"Content-type": "application/json"};
-    var response = await http.post(url, headers:headers, body: '{"brightness": $bright}');
 
-    print(response.statusCode.toString() + ': ' + response.body);
-    */
-    print("Brightness set");
   }
 }

@@ -106,8 +106,8 @@ class _ConnectViewState extends State<ConnectView> {
         ],
       ),
       floatingActionButton: SizedBox(
-        width: 140,
-        height: 40,
+        width: 175,
+        height: 50,
         child: ElevatedButton(
             style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -123,9 +123,16 @@ class _ConnectViewState extends State<ConnectView> {
               );
             },
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [Icon(Icons.add), Text("hinzufügen")],
-            )),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: const [
+        Expanded(
+          child: Icon(Icons.add),
+        ),
+        Expanded(
+          child: Text("hinzufügen"),
+        ),
+      ],
+    ),),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

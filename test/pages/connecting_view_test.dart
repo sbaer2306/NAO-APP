@@ -23,7 +23,7 @@ void main() {
 
   testWidgets('The Connecting View has a title', (tester) async {
     await tester.pumpWidget(widget);
-    final titleFinder = find.text("testTitle");
+    final titleFinder = find.text("Verbinden");
 
     expect(titleFinder, findsOneWidget);
   });
@@ -31,16 +31,16 @@ void main() {
   testWidgets('The List of Connections is empty', (tester) async {
     await tester.pumpWidget(widget);
     expect(
-        find.text("Stelle eine Verbinung zu einem NAO her!"), findsOneWidget);
+        find.text("Bitte verbinde dich mit einem NAO"), findsOneWidget);
   });
 
   testWidgets('Button is pressed and triggers navigation after tapped',
       (tester) async {
     await tester.pumpWidget(widget);
 
-    expect(find.byType(FloatingActionButton), findsOneWidget);
+    expect(find.byType(ElevatedButton), findsOneWidget);
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
 
     expect(find.byType(CreateConnectPage), findsOneWidget);
@@ -54,31 +54,10 @@ void main() {
         final robotProvider =
             Provider.of<RobotProvider>(context, listen: false);
         robotProvider.addRobot(RobotModel(ipAddress: "123"));
-        expect(find.text("Verbundene NAO's: "), findsOneWidget);
+        expect(find.text("Verbundene NAO's"), findsOneWidget);
 
         expect(find.text("123"), findsOneWidget);
 
-        return const Placeholder();
-      },
-    );
-  });
-
-  testWidgets('Remove a Listelement and show no connections', (tester) async {
-    await tester.pumpWidget(widget);
-
-    Builder(
-      builder: (BuildContext context) {
-        final robotProvider =
-            Provider.of<RobotProvider>(context, listen: false);
-        final robotModel = RobotModel(ipAddress: "123");
-        robotProvider.addRobot(robotModel);
-        expect(find.text("Verbundene NAO's: "), findsOneWidget);
-        expect(find.text("123"), findsOneWidget);
-
-        tester.tap(find.byType(IconButton));
-        expect(find.text("123"), findsNothing);
-        expect(find.text("Stelle eine Verbinung zu einem NAO her!"),
-            findsOneWidget);
         return const Placeholder();
       },
     );

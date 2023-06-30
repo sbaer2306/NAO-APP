@@ -156,14 +156,8 @@ class _ConfigViewState extends State<ConfigView> {
       Object languageObject = {
         'language': lng,
       };
-      print("changed language to: $lng");
-      
-      try {
-        await widget.robot.setLanguage(languageObject);
-      } catch (error) {
-        print("error saying something");
-      }
-      
+
+      await widget.robot.setLanguage(languageObject);      
     }
 
   Future<void> voiceHandler(String voice) async {
@@ -174,15 +168,7 @@ class _ConfigViewState extends State<ConfigView> {
       Object voiceObject = {
         'voice': voice,
       };
-
-      print("changed voice to: $voice");
-      
-      try {
-        await widget.robot.setVoice(voiceObject);
-      } catch (error) {
-        print("error voice handler");
-      }
-      
+      await widget.robot.setVoice(voiceObject);      
     }
 
   Future<void> volumeHandler(double vol) async {
@@ -193,13 +179,7 @@ class _ConfigViewState extends State<ConfigView> {
       Object volumeObject = {
         'volume': vol,
       };
-      
-      try {
-        await widget.robot.setVolume(volumeObject);
-      } catch (error) {
-        print("error volume handler");
-      }
-      
+      await widget.robot.setVolume(volumeObject);      
     }
 
   @override
@@ -235,8 +215,8 @@ class _ConfigViewState extends State<ConfigView> {
             ]),
             ConfigItem(
               children: [
-                Icon(Icons.wifi),
-                SizedBox(width: 8.0),
+                const Icon(Icons.wifi),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: SizedBox(
                     height: 4.0,
@@ -245,9 +225,9 @@ class _ConfigViewState extends State<ConfigView> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Icon(Icons.battery_3_bar_outlined),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
+                const Icon(Icons.battery_3_bar_outlined),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: SizedBox(
                     height: 4.0,
@@ -256,7 +236,7 @@ class _ConfigViewState extends State<ConfigView> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
               ],
             ),
             Padding(
@@ -391,7 +371,7 @@ class _ConfigViewState extends State<ConfigView> {
                           Provider.of<RobotProvider>(context, listen: true).removeRobot(widget.robot);
                           Navigator.pop(context); 
                         },
-                      child: Text("Entfernen"),
+                      child: const Text("Entfernen"),
                     ),
                   ),
                 ],

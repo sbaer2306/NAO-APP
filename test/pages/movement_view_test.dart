@@ -1,13 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:nao_app/providers/robot_provider.dart';
-import 'package:nao_app/ui_elements/info_card.dart';
 import 'package:nao_app/pages/movement_view.dart';
-import 'package:nao_app/models/robot_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:mockito/mockito.dart';
-import 'package:dio/dio.dart';
 
 void main() {
   final widget = ChangeNotifierProvider(

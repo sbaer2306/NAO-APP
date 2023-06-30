@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'dart:async';
 import 'package:nao_app/models/robot_model_test.dart';
 import 'package:nao_app/providers/robot_provider_test.dart';
 import 'package:nao_app/ui_elements/info_card.dart';
@@ -61,7 +60,7 @@ void main() {
                   delegates: const <LocalizationsDelegate<dynamic>>[DefaultWidgetsLocalizations.delegate, DefaultMaterialLocalizations.delegate,],
                     child: Material(
                       child: TextField(
-                        key: Key("Name"),
+                        key: const Key("Name"),
                         controller: nameController,
                         decoration: const InputDecoration(
                             hintText: "Gib einen Namen für deinen NAO ein"),
@@ -92,7 +91,7 @@ void main() {
                   delegates: const <LocalizationsDelegate<dynamic>>[DefaultWidgetsLocalizations.delegate, DefaultMaterialLocalizations.delegate,],
                     child: Material(
                       child: TextField(
-                        key: Key("IP"),
+                        key: const Key("IP"),
                         controller: ipAddressController,
                         decoration: const InputDecoration(
                             hintText: "Gib eine IP ein"),
@@ -122,7 +121,7 @@ void main() {
       Expanded(
         child: Material(
           child: Slider(
-            key: Key("Brightness"),
+            key: const Key("Brightness"),
             value: brightnessValue,
             onChanged: (value) {
               brightnessHandler(value.toDouble());
@@ -152,7 +151,7 @@ void main() {
             locale: const Locale('en', 'US'),
             delegates: const <LocalizationsDelegate<dynamic>>[DefaultWidgetsLocalizations.delegate, DefaultMaterialLocalizations.delegate,],
           child: DropdownButton(
-            key: Key("Language"),
+            key: const Key("Language"),
             value: languageEnum.selectedItem,
             items: languageEnum.items.map((value) {
               return DropdownMenuItem(
@@ -190,7 +189,7 @@ void main() {
             locale: const Locale('en', 'US'),
             delegates: const <LocalizationsDelegate<dynamic>>[DefaultWidgetsLocalizations.delegate, DefaultMaterialLocalizations.delegate,],
           child: DropdownButton(
-            key: Key("Voice"),
+            key: const Key("Voice"),
             value: voiceEnum.selectedItem,
             items: voiceEnum.items.map((value) {
               return DropdownMenuItem(
@@ -224,7 +223,7 @@ void main() {
       Expanded(
         child: Material(
           child: Slider(
-            key: Key("Volume"),
+            key: const Key("Volume"),
             value: volumeValue.toDouble(),
             min: 0,
             max: 100,
@@ -394,13 +393,8 @@ class _ConfigViewState extends State<ConfigViewTest> {
       Object languageObject = {
         'language': lng,
       };
-      print("changed language to: $lng");
       
-      try {
-        await widget.robot.setLanguage(languageObject);
-      } catch (error) {
-        print("error saying something");
-      }
+      await widget.robot.setLanguage(languageObject);
       
     }
 
@@ -413,14 +407,7 @@ class _ConfigViewState extends State<ConfigViewTest> {
         'voice': voice,
       };
 
-      print("changed voice to: $voice");
-      
-      try {
-        await widget.robot.setVoice(voiceObject);
-      } catch (error) {
-        print("error voice handler");
-      }
-      
+     await widget.robot.setVoice(voiceObject);
     }
 
   Future<void> volumeHandler(double vol) async {
@@ -431,13 +418,8 @@ class _ConfigViewState extends State<ConfigViewTest> {
       Object volumeObject = {
         'volume': vol,
       };
-      
-      try {
-        await widget.robot.setVolume(volumeObject);
-      } catch (error) {
-        print("error volume handler");
-      }
-      
+      await widget.robot.setVolume(volumeObject);
+
     }
 
   @override
@@ -474,10 +456,10 @@ class _ConfigViewState extends State<ConfigViewTest> {
               ),
             ]),
             ConfigItem(
-              key: Key("Status"),
+              key: const Key("Status"),
               children: [
-                Icon(Icons.wifi, textDirection: TextDirection.ltr),
-                SizedBox(width: 8.0),
+                const Icon(Icons.wifi, textDirection: TextDirection.ltr),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: SizedBox(
                     height: 4.0,
@@ -486,9 +468,9 @@ class _ConfigViewState extends State<ConfigViewTest> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Icon(Icons.battery_3_bar_outlined, textDirection: TextDirection.ltr),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
+                const Icon(Icons.battery_3_bar_outlined, textDirection: TextDirection.ltr),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: SizedBox(
                     height: 4.0,
@@ -497,7 +479,7 @@ class _ConfigViewState extends State<ConfigViewTest> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
               ],
             ),
             Padding(
@@ -660,7 +642,7 @@ class _ConfigViewState extends State<ConfigViewTest> {
                           Provider.of<RobotProviderTest>(context, listen: true).removeRobot(widget.robot);
                           Navigator.pop(context); 
                         },
-                      child: Text("Entfernen"),
+                      child: const Text("Entfernen"),
                     ),
                   ),
                 ],

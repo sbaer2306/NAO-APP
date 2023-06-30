@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/robot_provider.dart';
@@ -46,9 +44,6 @@ class MovementViewState extends State<MovementView> {
       case 'Neutrale Position':
         movement = 'StandZero';
         break;
-      case 'Hinknieen':
-        movement = 'Crouch';
-        break;
     }
 
     return movement;
@@ -63,13 +58,9 @@ class MovementViewState extends State<MovementView> {
 
     Future<void> actionMovement(String movement) async {
       String translatedMovement = translateMovement(movement);
-      try {
-        for (int i = 0; i < activeRobots.length; i++) {
+      for (int i = 0; i < activeRobots.length; i++) {
           activeRobots[i].setPosture(translatedMovement);
         }
-      } catch (error) {
-        print('Error occured: $error');
-      }
     }
 
     Future<void> toggleTajChi() async {
@@ -107,16 +98,9 @@ class MovementViewState extends State<MovementView> {
 
       if (!isMoving) {
         isMoving = true;
-        try {
-          for (int i = 0; i < activeRobots.length; i++) {
+        for (int i = 0; i < activeRobots.length; i++) {
             activeRobots[i].move(moveObject);
           }
-        } catch (error) {
-          print('Error occured: $error');
-        } finally {
-          print("Finally block executed from controlMovement");
-          isMoving = false;
-        }
       }
     }
 
@@ -315,6 +299,7 @@ class ControlButton extends StatefulWidget {
       required this.onReleased});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ControlButtonState createState() => _ControlButtonState();
 }
 
