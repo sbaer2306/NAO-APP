@@ -447,7 +447,7 @@ class _ConfigViewState extends State<ConfigViewTest> {
                 title: "Konfiguriere deinen NAO",
                 description:
                     "Konfugiere deinen NAO nach deinen Wünschen und Vorlieben. Du kannst gerne mit den Einstellungen herumspielen und die beste Konfiguration für dich finden."),
-            Row(children: const [
+            const Row(children: [
               Expanded(
                 child: ConfigTitle(title: "Wifi"),
               ),

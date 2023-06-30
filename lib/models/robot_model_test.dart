@@ -282,7 +282,7 @@ class RobotModelTest implements RobotInterface {
     }
     */
 
-    return 0.5;
+    return 0.9;
   }
 
   Future<double> getWifi() async {
@@ -299,7 +299,7 @@ class RobotModelTest implements RobotInterface {
       return 0.5;
     }
     */
-    return 0.5;
+    return 0.1;
   }
 
   Future<double> getBrightness() async {
@@ -316,7 +316,7 @@ class RobotModelTest implements RobotInterface {
       return 0.5;
     }
     */
-    return 0.5;
+    return 0.7;
   }
 
   Future<double> getVolume() async {
@@ -333,7 +333,7 @@ class RobotModelTest implements RobotInterface {
       return 0.5;
     }
     */
-    return 50;
+    return 10;
   }
   // Setter
   Future<void> setName(String name) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'dart:async';
 import 'package:nao_app/models/robot_model.dart';
 import 'package:nao_app/providers/robot_provider.dart';
@@ -70,26 +71,24 @@ class _ConfigViewState extends State<ConfigView> {
   Enum? voiceEnum = Enum(
       items: ["Julia22Enhanced", "maki_n16", "naoenu", "naomnc"],
       selectedItem: "Julia22Enhanced");
-
-  //an Frank: Verwende getVoice / getLanguage wie auch immer es dir passt, habe sie aus der SPrachseite entfernt, also
-  //Enum ist nicht notwendig.
-
+  
+  int volumeValue = 50;
+  
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     
-    getBattery();
-    getWifi();
-    _nameController.text = widget.robot.name;
-    _ipAddressController.text = widget.robot.ipAddress;
-    getBrightness();
-    getLanguage();
-    getVoice();
-    getVolume();    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getBattery();
+      getWifi();
+      _nameController.text = widget.robot.name;
+      _ipAddressController.text = widget.robot.ipAddress;
+      getBrightness();
+      //getLanguage();
+      //getVoice();
+      getVolume();
+    });
   }
-
-  int volumeValue = 50;
 
   // Getter
   Future<void> getBattery() async {
@@ -116,6 +115,7 @@ class _ConfigViewState extends State<ConfigView> {
     });
   }
 
+  /*
   Future<void> getLanguage() async {
     setState(() {
       widget.robot.getLanguage().then((value) => {
@@ -131,6 +131,7 @@ class _ConfigViewState extends State<ConfigView> {
       });
     });
   }
+  */
 
   Future<void> getVolume() async {
     setState(() {
@@ -183,6 +184,7 @@ class _ConfigViewState extends State<ConfigView> {
       Object voiceObject = {
         'voice': voice,
       };
+      
       await widget.robot.setVoice(voiceObject);      
     }
 
@@ -194,6 +196,7 @@ class _ConfigViewState extends State<ConfigView> {
       Object volumeObject = {
         'volume': vol,
       };
+
       await widget.robot.setVolume(volumeObject);      
     }
 
@@ -212,7 +215,7 @@ class _ConfigViewState extends State<ConfigView> {
                 title: "Konfiguriere deinen NAO",
                 description:
                     "Konfugiere deinen NAO nach deinen Wünschen und Vorlieben. Du kannst gerne mit den Einstellungen herumspielen und die beste Konfiguration für dich finden."),
-            Row(children: const [
+            const Row(children: [
               Expanded(
                 child: ConfigTitle(title: "Wifi"),
               ),

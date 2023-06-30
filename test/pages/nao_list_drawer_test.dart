@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:nao_app/models/robot_model.dart';
 import 'package:nao_app/providers/robot_provider.dart';
 import 'package:provider/provider.dart';
+
+void main() {
+  
+  testWidgets('Widget Test for NAO list drawer', (widgetTester) async {
+
+    await widgetTester.pumpWidget(const NaoListDrawer());
+    
+    final wifiFinder = find.byKey(const Key('Drawer'));
+    expect(wifiFinder, findsOneWidget);
+  });
+
+}
 
 class NaoElement extends StatefulWidget {
   const NaoElement({Key? key, required this.robot}) : super(key: key);
@@ -74,30 +87,37 @@ class NaoListDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var robots = context.watch<RobotProvider>();
+    var robots = RobotProvider();
 
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          SizedBox(
-              height: 64.0,
-              child: DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple[50],
-                ),
-                child: const Text('NAO Auswahl zur gleichzeitigen Steuerung'),
-              )),
-          if (robots.items.isNotEmpty)
-            for (int i = 0; i < robots.items.length; i++)
-              NaoElement(robot: robots.items[i])
-          else
-            const Text(
-              'Kein NAO vorhanden',
-              textAlign: TextAlign.center,
-            )
-        ],
-      ),
+    return Localizations(
+            locale: const Locale('en', 'US'),
+            delegates: const <LocalizationsDelegate<dynamic>>[DefaultWidgetsLocalizations.delegate, DefaultMaterialLocalizations.delegate,],
+              child: Material(
+                child:Drawer(
+                  key: Key("Drawer"),
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      SizedBox(
+                          height: 64.0,
+                          child: DrawerHeader(
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple[50],
+                            ),
+                            child: const Text('NAO Auswahl zur gleichzeitigen Steuerung'),
+                          )),
+                      if (robots.items.isNotEmpty)
+                        for (int i = 0; i < robots.items.length; i++)
+                          NaoElement(robot: robots.items[i])
+                      else
+                        const Text(
+                          'Kein NAO vorhanden',
+                          textAlign: TextAlign.center,
+                        )
+                    ],
+                  ),
+                )
+              )
     );
   }
 }
