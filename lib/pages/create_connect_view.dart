@@ -44,9 +44,6 @@ class _CreateConnectPageState extends State<CreateConnectPage>
     }
 
     Future<int> connectToNao(RobotModel robot) async {
-      print(_usernameController.text);
-      print(_pwController.text);
-
       setState(() {
         _isLoading = true;
       });

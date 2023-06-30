@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../providers/robot_provider.dart';
 import '../models/robot_model.dart' show Enum;
@@ -43,14 +41,8 @@ class _SpeakerViewState extends State<SpeakerView> {
       Object languageObject = {
         'language': lng,
       };
-      print("changed language to: $lng");
       for (int i = 0; i < activeRobots.length; i++) {
-        try {
-          print("before backend function");
-          await activeRobots[i].setLanguage(languageObject);
-        } catch (error) {
-          print("error saying something");
-        }
+        await activeRobots[i].setLanguage(languageObject);
       }
     }
 
@@ -63,14 +55,8 @@ class _SpeakerViewState extends State<SpeakerView> {
         'voice': lng,
       };
 
-      print("changed voice to: $lng");
       for (int i = 0; i < activeRobots.length; i++) {
-        try {
-          print("before backend function");
-          await activeRobots[i].setVoice(voiceObject);
-        } catch (error) {
-          print("error saying something");
-        }
+        await activeRobots[i].setVoice(voiceObject);
       }
     }
 
@@ -83,12 +69,7 @@ class _SpeakerViewState extends State<SpeakerView> {
         'volume': vol,
       };
       for (int i = 0; i < activeRobots.length; i++) {
-        try {
-          print("before backend function");
-          await activeRobots[i].setVolume(volumeObject);
-        } catch (error) {
-          print("error saying something");
-        }
+        await activeRobots[i].setVolume(volumeObject);
       }
     }
 
@@ -98,14 +79,8 @@ class _SpeakerViewState extends State<SpeakerView> {
       Map<String, String> audioObject = {
         'text': textToSpeak,
       };
-      print(audioObject);
       for (int i = 0; i < activeRobots.length; i++) {
-        try {
-          print("before backend function");
-          await activeRobots[i].saySomething(audioObject);
-        } catch (error) {
-          print("error saying something");
-        }
+        await activeRobots[i].saySomething(audioObject);
       }
       _speakController.clear();
     }

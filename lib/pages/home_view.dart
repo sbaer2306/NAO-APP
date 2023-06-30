@@ -14,7 +14,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  void _toggleNaoList() {}
 
   @override
   Widget build(BuildContext context) {
