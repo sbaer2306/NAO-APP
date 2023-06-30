@@ -74,6 +74,21 @@ class _ConfigViewState extends State<ConfigView> {
   //an Frank: Verwende getVoice / getLanguage wie auch immer es dir passt, habe sie aus der SPrachseite entfernt, also
   //Enum ist nicht notwendig.
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
+    getBattery();
+    getWifi();
+    _nameController.text = widget.robot.name;
+    _ipAddressController.text = widget.robot.ipAddress;
+    getBrightness();
+    getLanguage();
+    getVoice();
+    getVolume();    
+  }
+
   int volumeValue = 50;
 
   // Getter
@@ -185,14 +200,6 @@ class _ConfigViewState extends State<ConfigView> {
   @override
   Widget build(BuildContext context) {
 
-    getBattery();
-    getWifi();
-    _nameController.text = widget.robot.name;
-    _ipAddressController.text = widget.robot.ipAddress;
-    getBrightness();
-    getLanguage();
-    getVoice();
-    getVolume();    
 
     return Scaffold(
         appBar: AppBar(title: const Text("Konfiguration")),
