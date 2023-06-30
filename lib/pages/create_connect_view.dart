@@ -144,7 +144,7 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                         ],
                       )
                     : SizedBox(
-                        width: 140,
+                        width: 175,
                         height: 40,
                         child: ElevatedButton(
                             style: ButtonStyle(
