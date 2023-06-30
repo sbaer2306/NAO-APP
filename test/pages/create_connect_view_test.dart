@@ -11,13 +11,20 @@ void main() {
       create: (context) => RobotProvider(),
       child: const MaterialApp(
         home: CreateConnectPage(),
-        //navigatorObservers: [mockObserver],
-      ));
+  ));
 
   testWidgets('write a IP-Address', (tester) async {
     await tester.pumpWidget(widget);
-    await tester.enterText(find.byType(TextField), '192.168.123.1');
+    final ipAddressTextField = find.byKey(const Key('ipAddressTextField'));
+    await tester.enterText(ipAddressTextField, '192.168.123.1');
     expect(find.text("192.168.123.1"), findsOneWidget);
+  });
+
+  testWidgets('write a Name for the NAO', (tester) async {
+    await tester.pumpWidget(widget);
+    final ipAddressTextField = find.byKey(const Key('nameTextField'));
+    await tester.enterText(ipAddressTextField, 'Test');
+    expect(find.text("Test"), findsOneWidget);
   });
 
   testWidgets('Pressed Button show a AlertDialog', (tester) async {

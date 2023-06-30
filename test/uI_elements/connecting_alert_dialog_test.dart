@@ -46,9 +46,10 @@ void main() {
       await tester.pumpWidget(const MaterialApp(
           home: ConnectingDialog(code: 500, ip: "192.168.123.1")));
 
+      var statusCode = 500;
       expect(
           find.text(
-              "Es konnte keine Verbindung hergestellt werden. Statuscode: 500"),
+              "Es konnte keine Verbindung hergestellt werden.\nStatuscode: $statusCode"),
           findsOneWidget);
     });
   });

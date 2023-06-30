@@ -77,6 +77,7 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
+                    key: const Key("nameTextField"),
                     controller: _nameController,
                     decoration: const InputDecoration(
                         filled: true,
@@ -88,6 +89,7 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
+                    key: const Key("ipAddressTextField"),
                     keyboardType: TextInputType.number,
                     controller: _ipAddressController,
                     decoration: const InputDecoration(
@@ -170,13 +172,16 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                               });
                             },
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Icon(Icons.add),
-                                Text("verbinden",
-                                    style: TextStyle(fontSize: 17))
-                              ],
-                            )),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: const [
+        Expanded(
+          child: Icon(Icons.add),
+        ),
+        Expanded(
+          child: Text("hinzufügen"),
+        ),
+      ],
+    ),),
                       ),
               ],
             ),

@@ -21,7 +21,6 @@ class RobotProvider extends ChangeNotifier {
       tajChiStates[newRobot.ipAddress] = false;
       notifyListeners();  
     }
-    
   }
 
   void addActiveRobot(RobotModel activeRobot) {
