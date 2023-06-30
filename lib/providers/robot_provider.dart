@@ -15,10 +15,13 @@ class RobotProvider extends ChangeNotifier {
       UnmodifiableListView(_activeItems);
 
   void addRobot(RobotModel newRobot) {
-    _items.add(newRobot);
-    toggleStates[newRobot.ipAddress] = false;
-    tajChiStates[newRobot.ipAddress] = false;
-    notifyListeners();
+    if(!_items.contains(newRobot)){
+      _items.add(newRobot);
+      toggleStates[newRobot.ipAddress] = false;
+      tajChiStates[newRobot.ipAddress] = false;
+      notifyListeners();  
+    }
+    
   }
 
   void addActiveRobot(RobotModel activeRobot) {

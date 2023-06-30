@@ -46,9 +46,6 @@ class MovementViewState extends State<MovementView> {
       case 'Neutrale Position':
         movement = 'StandZero';
         break;
-      case 'Hinknieen':
-        movement = 'Crouch';
-        break;
     }
 
     return movement;
