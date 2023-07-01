@@ -111,6 +111,8 @@ class MovementViewState extends State<MovementView> {
         return;
       }
 
+      print(direction);
+
       Map<String, dynamic> moveObject = {
         'enableArmsInWalkAlgorithm': true,
         'xCoordinate': '0',
@@ -133,10 +135,12 @@ class MovementViewState extends State<MovementView> {
       }
 
       if (!isMoving) {
+        print("ismoving");
         isMoving = true;
         for (int i = 0; i < activeRobots.length; i++) {
           activeRobots[i].move(moveObject);
         }
+        isMoving = false;
       }
     }
 
