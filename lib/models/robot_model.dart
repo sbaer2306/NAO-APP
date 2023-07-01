@@ -25,8 +25,7 @@ class RobotModel implements RobotInterface {
       this.voice = "",
       this.language = ""});
 
-  Future<int> connect(String port, String username, String pw) async {
-    //await installBackendOnNAO(username, pw);
+  Future<int> connect(String port) async {
     //Test URL
     var url = Uri.https('httpbin.org', 'post');
 
@@ -37,22 +36,31 @@ class RobotModel implements RobotInterface {
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
 
     //NAO response
-/*     final response = await http
-        .post(url, headers: headers, body: json)
-        .timeout(const Duration(seconds: 10), onTimeout: () {
-      return http.Response('statusCode', 408);
-    }); */
+    try {
+      final response = await http
+          .post(url, headers: headers, body: json)
+          .timeout(const Duration(seconds: 10), onTimeout: () {
+        return http.Response('statusCode', 408);
+      });
+      return response.statusCode;
+    } catch (error) {
+      return 500;
+    }
 
     //TEST response
-    final response = await http.post(url, body: {'name': 'test'}).timeout(
-        const Duration(seconds: 10), onTimeout: () {
-      return http.Response('statusCode', 408);
-    });
+/*     try {
+      final response = await http.post(url, body: {'name': 'test'}).timeout(
+          const Duration(seconds: 10), onTimeout: () {
+        return http.Response('statusCode', 408);
+      });
 
-    return response.statusCode;
+      return response.statusCode;
+    } catch (error) {
+      return 500;
+    } */
   }
 
-  Future<void> installBackendOnNAO(String username, String pw) async {
+  Future<bool> installBackendOnNAO(String username, String pw) async {
     // ignore: unnecessary_new
     var client = new SSHClient(
       host: ipAddress,
@@ -75,10 +83,12 @@ class RobotModel implements RobotInterface {
             "PYTHONPATH=/opt/aldebaran/lib/python2.7/site-packages nohup /usr/bin/python2 /data/home/nao/NAO-APP-Pythonserver-API-main/app.py > log.txt 2>&1 &\n");
       }
       await client.disconnect();
+      return true;
     } catch (error) {
       if (kDebugMode) {
         print(error);
       }
+      return false;
     }
   }
 
