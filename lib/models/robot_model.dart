@@ -25,28 +25,42 @@ class RobotModel implements RobotInterface {
       this.voice = "",
       this.language = ""});
 
-  Future<int> connect(String port, String username, String pw) async {
-    
-    await installBackendOnNAO(username, pw);
+  Future<int> connect(String port) async {
+    //Test URL
+    var url = Uri.https('httpbin.org', 'post');
 
     //NAO URL
-    var url = Uri.http('$ipAddress:8080', '/api/connect');
+    //var url = Uri.http('$ipAddress:8080', '/api/connect');
 
     final headers = {"Content-type": "application/json"};
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
 
     //NAO response
-    final response = await http
-        .post(url, headers: headers, body: json)
-        .timeout(const Duration(seconds: 10), onTimeout: () {
-      return http.Response('statusCode', 408);
-    });
+    try {
+      final response = await http
+          .post(url, headers: headers, body: json)
+          .timeout(const Duration(seconds: 10), onTimeout: () {
+        return http.Response('statusCode', 408);
+      });
+      return response.statusCode;
+    } catch (error) {
+      return 500;
+    }
 
+    //TEST response
+/*     try {
+      final response = await http.post(url, body: {'name': 'test'}).timeout(
+          const Duration(seconds: 10), onTimeout: () {
+        return http.Response('statusCode', 408);
+      });
 
-    return response.statusCode;
+      return response.statusCode;
+    } catch (error) {
+      return 500;
+    } */
   }
 
-  Future<void> installBackendOnNAO(String username, String pw) async{
+  Future<bool> installBackendOnNAO(String username, String pw) async {
     // ignore: unnecessary_new
     var client = new SSHClient(
       host: ipAddress,
@@ -61,16 +75,21 @@ class RobotModel implements RobotInterface {
       result = await client.connect() ?? 'Null result';
 
       if (result == "session_connected") {
-
-        await client.execute("wget https://github.com/sbaer2306/NAO-APP-Pythonserver-API/archive/refs/heads/main.zip\n");
+        await client.execute(
+            "wget https://github.com/sbaer2306/NAO-APP-Pythonserver-API/archive/refs/heads/main.zip\n");
         await client.execute("unzip -o main.zip && rm main.zip\n");
         await client.execute("pip install --user nao flask\n");
-        await client.execute("PYTHONPATH=/opt/aldebaran/lib/python2.7/site-packages nohup /usr/bin/python2 /data/home/nao/NAO-APP-Pythonserver-API-main/app.py > log.txt 2>&1 &\n");
+        await client.execute(
+            "PYTHONPATH=/opt/aldebaran/lib/python2.7/site-packages nohup /usr/bin/python2 /data/home/nao/NAO-APP-Pythonserver-API-main/app.py > log.txt 2>&1 &\n");
       }
       await client.disconnect();
-    }catch(error){if (kDebugMode) {
-      print(error);
-    }}
+      return true;
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
+      return false;
+    }
   }
 
   @override
@@ -81,6 +100,7 @@ class RobotModel implements RobotInterface {
         '{"enableArmsInWalkAlgorithm": true, "posture": "$posture", "speed": ${1}}';
 
     if (kDebugMode) {
+      print("posture");
       try {
         var response = await http.post(url, headers: headers, body: body);
         if (response.statusCode == 200) {
@@ -100,14 +120,15 @@ class RobotModel implements RobotInterface {
     var headers = {"Content-type": "application/json"};
     var body = json.encode(moveObject);
     if (kDebugMode) {
+      print("move");
       try {
-        var response = await http.post(url, headers: headers, body: body);
+        /* var response = await http.post(url, headers: headers, body: body);
 
         if (response.statusCode == 200) {
           print('Success: ${json.encode(moveObject)}.');
         } else {
           print('${response.statusCode}: ${response.body}');
-        }
+        } */
       } catch (error) {
         print('Error occurred: $error');
       }
@@ -125,6 +146,7 @@ class RobotModel implements RobotInterface {
   Future<void> handleTajChi(bool isTajChiEnabled) async {
     var headers = {"Content-type": "application/json"};
     Uri url;
+    print("tajchi");
     if (isTajChiEnabled) {
       url = Uri.http('$ipAddress:8080', '/api/behavior/stop_taj_chi');
     } else {
@@ -146,7 +168,7 @@ class RobotModel implements RobotInterface {
     Uri url = Uri.http('$ipAddress:8080', '/api/audio/tts');
     var bodyObj = json.encode(audioObject);
     try {
-      await http.post(url, headers: headers, body:bodyObj );
+      await http.post(url, headers: headers, body: bodyObj);
     } catch (error) {
       if (kDebugMode) {
         print('Error occurred: $error');
@@ -169,22 +191,19 @@ class RobotModel implements RobotInterface {
     return Future.value(Enum(items: [], selectedItem: ""));
   }
 
-
   Future<Enum> getVoice() async {
     var headers = {"Content-type": "application/json"};
     Uri url = Uri.http('$ipAddress:8080', '/api/audio/voice');
 
     var response = await http.get(url, headers: headers);
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        List<String> voices = List<String>.from(data['voice']);
-        return Future.value(Enum(items: voices, selectedItem: voices[0]));
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      List<String> voices = List<String>.from(data['voice']);
+      return Future.value(Enum(items: voices, selectedItem: voices[0]));
     }
 
     return Future.value(Enum(items: [], selectedItem: ""));
   }
-
-
 
   @override
   Future<void> setLanguage(Object languageObject) async {
@@ -193,7 +212,6 @@ class RobotModel implements RobotInterface {
     var langObj = json.encode(languageObject);
     await http.post(url, headers: headers, body: langObj);
   }
-
 
   @override
   Future<void> setVoice(Object voiceObject) async {
@@ -219,8 +237,7 @@ class RobotModel implements RobotInterface {
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['battery'].toDouble() / 100.0;
-    }
-    else {
+    } else {
       return 0.5;
     }
   }
@@ -231,8 +248,7 @@ class RobotModel implements RobotInterface {
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['strength'].toDouble() / 100.0;
-    }
-    else {
+    } else {
       return 0.5;
     }
   }
@@ -240,7 +256,7 @@ class RobotModel implements RobotInterface {
   Future<int> getBrightness() async {
     Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
     var response = await http.get(url);
-    
+
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['brightnesss'];
     }
@@ -252,7 +268,7 @@ class RobotModel implements RobotInterface {
   Future<int> getVolume() async {
     Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
     var response = await http.get(url);
-    
+
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['volume'];
     }
@@ -260,6 +276,7 @@ class RobotModel implements RobotInterface {
       return 50;
     }
   }
+
   // Setter
   Future<void> setName(String name) async {
     this.name = name;

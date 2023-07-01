@@ -59,8 +59,9 @@ class _ConnectingDialogState extends State<ConnectingDialog>
                   ),
                 ],
               )
-            : Text(
-                "Es konnte keine Verbindung hergestellt werden.\nStatuscode: ${widget.code}"),
+            : Text(widget.code == 409
+                ? "Sie sind bereits mit dem Roboter verbunden. \nStatuscode: ${widget.code}"
+                : "Es konnte keine Verbindung hergestellt werden.\nStatuscode: ${widget.code}"),
         actions: <Widget>[
           OutlinedButton(
               onPressed: () {

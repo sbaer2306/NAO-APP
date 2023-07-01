@@ -33,7 +33,32 @@ class _SpeakerViewState extends State<SpeakerView> {
     final robotProvider = Provider.of<RobotProvider>(context, listen: false);
     final activeRobots = robotProvider.activeItems;
 
+    void showAlertDialog() {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Wähle einen NAO aus"),
+              content: const Text(
+                  "Damit du den NAO steuern kannst, wähle bitte einen NAO aus"),
+              actions: <Widget>[
+                OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("OK"))
+              ],
+            );
+          });
+    }
+
     Future<void> languageHandler(String lng) async {
+      if (activeRobots.isEmpty) {
+        showAlertDialog();
+        return;
+      }
+
       setState(() {
         languageEnum?.selectedItem = lng;
       });
@@ -47,6 +72,11 @@ class _SpeakerViewState extends State<SpeakerView> {
     }
 
     Future<void> voiceHandler(String lng) async {
+      if (activeRobots.isEmpty) {
+        showAlertDialog();
+        return;
+      }
+
       setState(() {
         voiceEnum?.selectedItem = lng;
       });
@@ -61,6 +91,11 @@ class _SpeakerViewState extends State<SpeakerView> {
     }
 
     Future<void> volumeHandler(double vol) async {
+      if (activeRobots.isEmpty) {
+        showAlertDialog();
+        return;
+      }
+
       setState(() {
         volumeValue = vol.toInt();
       });
@@ -74,6 +109,11 @@ class _SpeakerViewState extends State<SpeakerView> {
     }
 
     Future<void> saySomething() async {
+      if (activeRobots.isEmpty) {
+        showAlertDialog();
+        return;
+      }
+
       String textToSpeak = _speakController.text;
 
       Map<String, String> audioObject = {
@@ -84,6 +124,7 @@ class _SpeakerViewState extends State<SpeakerView> {
       }
       _speakController.clear();
     }
+
 /*
     Future<void> getVolume() async {
       int volume = await activeRobots[0].getVolume();

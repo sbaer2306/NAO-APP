@@ -21,8 +21,8 @@ class _CreateConnectPageState extends State<CreateConnectPage>
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
 
-
   bool _isLoading = false;
+  bool _isChecked = false;
 
   @override
   void initState() {
@@ -47,7 +47,16 @@ class _CreateConnectPageState extends State<CreateConnectPage>
       setState(() {
         _isLoading = true;
       });
-      return robot.connect("9559", _usernameController.text, _pwController.text );
+      bool isInstalled = true;
+
+      if (_isChecked) {
+        isInstalled = await robot.installBackendOnNAO(
+            _usernameController.text, _pwController.text);
+      }
+
+      if (isInstalled) return robot.connect("9559");
+
+      return 500;
     }
 
     return Scaffold(
@@ -78,7 +87,7 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                     controller: _nameController,
                     decoration: const InputDecoration(
                         filled: true,
-                        hintText: "Gib hier deinen gewünschten Namen für die APP ein",
+                        hintText: "Gib hier deinen gewünschten Namen ein",
                         fillColor: Color(0xfffef7ff)),
                   ),
                 ),
@@ -95,30 +104,61 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                         fillColor: Color(0xfffef7ff)),
                   ),
                 ),
-                 const Headline(title: "Benutzername"),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                        filled: true,
-                        hintText: "Gib hier den SSH-Benutzernamen ein",
-                        fillColor: Color(0xfffef7ff)),
-                  ),
-                ),
-                const Headline(title: "Passwort"),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextField(
-                    controller: _pwController,
-                    decoration: const InputDecoration(
-                        filled: true,
-                        hintText: "Gib hier das Passwort für die SSH-Benutzer ein",
-                        fillColor: Color(0xfffef7ff)),
-                  ),
-                ),
                 const SizedBox(
-                  height: 50,
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Checkbox(
+                        value: _isChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isChecked = value!;
+                          });
+                        }),
+                    const Text("Erstmalige Verbindung?"),
+                  ],
+                ),
+                _isChecked
+                    ? Column(
+                        children: [
+                          const Headline(title: "Benutzername"),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: TextField(
+                              controller: _usernameController,
+                              decoration: const InputDecoration(
+                                  filled: true,
+                                  hintText:
+                                      "Gib hier den SSH-Benutzernamen ein",
+                                  fillColor: Color(0xfffef7ff)),
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+                _isChecked
+                    ? Column(
+                        children: [
+                          const Headline(title: "Passwort"),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: TextField(
+                              obscureText: true,
+                              controller: _pwController,
+                              decoration: const InputDecoration(
+                                  filled: true,
+                                  hintText:
+                                      "Gib hier das Passwort für die SSH-Benutzer ein",
+                                  fillColor: Color(0xfffef7ff)),
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+                const SizedBox(
+                  height: 30,
                 ),
                 _isLoading
                     ? Column(
@@ -130,16 +170,16 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                           ),
                           ElevatedButton(
                               style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ))),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ))),
                               onPressed: () {
-                                  setState(() {
+                                setState(() {
                                   _isLoading = false;
-                                  });
-                                },
+                                });
+                              },
                               child: const Text("Abbrechen"))
                         ],
                       )
@@ -147,38 +187,42 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                         width: 175,
                         height: 40,
                         child: ElevatedButton(
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ))),
-                            onPressed: () async {
-                              final newRobot = RobotModel(
-                                  ipAddress: _ipAddressController.text,
-                                  name: _nameController.text);
-                              connectToNao(newRobot).then((success) {
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                                showAlertDialog(success);
-                                if (success == 200) {
-                                  robotProvider.addRobot(newRobot);
-                                  //Navigator.pop(context);
-                                }
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ))),
+                          onPressed: () async {
+                            final newRobot = RobotModel(
+                                ipAddress: _ipAddressController.text,
+                                name: _nameController.text);
+                            connectToNao(newRobot).then((success) {
+                              setState(() {
+                                _isLoading = false;
                               });
-                            },
-                            child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
-        Expanded(
-          child: Icon(Icons.add),
-        ),
-        Expanded(
-          child: Text("hinzufügen"),
-        ),
-      ],
-    ),),
+                              if (success == 200) {
+                                if (!robotProvider.addRobot(newRobot)) {
+                                  success = 409;
+                                }
+                              }
+
+                              showAlertDialog(success);
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Expanded(
+                                child: Icon(Icons.add),
+                              ),
+                              Expanded(
+                                child: Text("hinzufügen"),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
               ],
             ),
@@ -197,7 +241,7 @@ class Headline extends StatelessWidget {
     return Row(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
+          padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
           child: Text(
             title,
             style: TextStyle(

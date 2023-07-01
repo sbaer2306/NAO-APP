@@ -69,7 +69,7 @@ class ConfigView extends StatefulWidget {
   State<StatefulWidget> createState() => _ConfigViewState();
 }
 
-class _ConfigViewState extends State<ConfigView> {  
+class _ConfigViewState extends State<ConfigView> {
   double batteryValue = 0.5;
   double wifiValue = 0.5;
 
@@ -84,13 +84,13 @@ class _ConfigViewState extends State<ConfigView> {
   Enum? voiceEnum = Enum(
       items: ["Julia22Enhanced", "maki_n16", "naoenu", "naomnc"],
       selectedItem: "Julia22Enhanced");
-  
+
   int volumeValue = 50;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getBattery();
       getWifi();
@@ -106,25 +106,19 @@ class _ConfigViewState extends State<ConfigView> {
   // Getter
   Future<void> getBattery() async {
     setState(() {
-      widget.robot.getBattery().then((value) => {
-        batteryValue = value
-      });
+      widget.robot.getBattery().then((value) => {batteryValue = value});
     });
   }
 
   Future<void> getWifi() async {
     setState(() {
-      widget.robot.getWifi().then((value) => {
-        wifiValue = value
-      });
+      widget.robot.getWifi().then((value) => {wifiValue = value});
     });
   }
 
   Future<void> getBrightness() async {
     setState(() {
-      widget.robot.getBrightness().then((value) => {
-        brightnessValue = value
-      });
+      widget.robot.getBrightness().then((value) => {brightnessValue = value});
     });
   }
 
@@ -148,9 +142,7 @@ class _ConfigViewState extends State<ConfigView> {
 
   Future<void> getVolume() async {
     setState(() {
-      widget.robot.getVolume().then((value) => {
-        volumeValue = value.toInt()
-      });
+      widget.robot.getVolume().then((value) => {volumeValue = value.toInt()});
     });
   }
 
@@ -182,45 +174,43 @@ class _ConfigViewState extends State<ConfigView> {
   }
 
   Future<void> languageHandler(String lng) async {
-      setState(() {
-        languageEnum?.selectedItem = lng;
-      });
+    setState(() {
+      languageEnum?.selectedItem = lng;
+    });
 
-      Object languageObject = {
-        'language': lng,
-      };
+    Object languageObject = {
+      'language': lng,
+    };
 
-      await widget.robot.setLanguage(languageObject);      
-    }
+    await widget.robot.setLanguage(languageObject);
+  }
 
   Future<void> voiceHandler(String voice) async {
-      setState(() {
-        voiceEnum?.selectedItem = voice;
-      });
+    setState(() {
+      voiceEnum?.selectedItem = voice;
+    });
 
-      Object voiceObject = {
-        'voice': voice,
-      };
-      
-      await widget.robot.setVoice(voiceObject);      
-    }
+    Object voiceObject = {
+      'voice': voice,
+    };
+
+    await widget.robot.setVoice(voiceObject);
+  }
 
   Future<void> volumeHandler(double vol) async {
-      setState(() {
-        volumeValue = vol.toInt();
-      });
+    setState(() {
+      volumeValue = vol.toInt();
+    });
 
-      Object volumeObject = {
-        'volume': vol,
-      };
+    Object volumeObject = {
+      'volume': vol,
+    };
 
-      await widget.robot.setVolume(volumeObject);      
-    }
+    await widget.robot.setVolume(volumeObject);
+  }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
         appBar: AppBar(title: const Text("Konfiguration")),
         body: SingleChildScrollView(
@@ -232,7 +222,7 @@ class _ConfigViewState extends State<ConfigView> {
                 title: "Konfiguriere deinen NAO",
                 description:
                     "Konfugiere deinen NAO nach deinen Wünschen und Vorlieben. Du kannst gerne mit den Einstellungen herumspielen und die beste Konfiguration für dich finden."),
-            const Row(children: [
+            Row(children: [
               Expanded(
                 child: ConfigTitle(title: "Wifi"),
               ),
@@ -326,21 +316,20 @@ class _ConfigViewState extends State<ConfigView> {
                         const ConfigTitle(title: "Sprache"),
                         ConfigItem(children: [
                           Expanded(
-                            child: DropdownButton(
-                                value: languageEnum?.selectedItem ?? '',
-                                items: languageEnum != null
-                                    ? languageEnum?.items.map((value) {
-                                  return DropdownMenuItem(
-                                    value: value.toString(),
-                                    child: Text(value.toString()),
-                                  );
-                                }).toList()
-                                    : [],
-                                onChanged: (value) {
-                                  languageHandler(value.toString());
-                                },
-                            )
-                          )
+                              child: DropdownButton(
+                            value: languageEnum?.selectedItem ?? '',
+                            items: languageEnum != null
+                                ? languageEnum?.items.map((value) {
+                                    return DropdownMenuItem(
+                                      value: value.toString(),
+                                      child: Text(value.toString()),
+                                    );
+                                  }).toList()
+                                : [],
+                            onChanged: (value) {
+                              languageHandler(value.toString());
+                            },
+                          ))
                         ])
                       ]),
                 ),
@@ -351,21 +340,20 @@ class _ConfigViewState extends State<ConfigView> {
                         const ConfigTitle(title: "Stimme"),
                         ConfigItem(children: [
                           Expanded(
-                            child: DropdownButton(
-                                value: voiceEnum?.selectedItem ?? '',
-                                items: voiceEnum != null
-                                    ? voiceEnum?.items.map((value) {
-                                  return DropdownMenuItem(
-                                    value: value.toString(),
-                                    child: Text(value.toString()),
-                                  );
-                                }).toList()
-                                    : [],
-                                onChanged: (value) {
-                                  voiceHandler(value.toString());
-                                },
-                            )
-                          )
+                              child: DropdownButton(
+                            value: voiceEnum?.selectedItem ?? '',
+                            items: voiceEnum != null
+                                ? voiceEnum?.items.map((value) {
+                                    return DropdownMenuItem(
+                                      value: value.toString(),
+                                      child: Text(value.toString()),
+                                    );
+                                  }).toList()
+                                : [],
+                            onChanged: (value) {
+                              voiceHandler(value.toString());
+                            },
+                          ))
                         ]),
                       ]),
                 )
@@ -377,13 +365,13 @@ class _ConfigViewState extends State<ConfigView> {
                 const Icon(Icons.volume_mute),
                 Expanded(
                   child: Slider(
-                    value: volumeValue.toDouble(),
-                    min: 0,
-                    max: 100,
-                    divisions: 100,
-                    onChanged: (value) {
-                      volumeHandler(value);
-                    }),
+                      value: volumeValue.toDouble(),
+                      min: 0,
+                      max: 100,
+                      divisions: 100,
+                      onChanged: (value) {
+                        volumeHandler(value);
+                      }),
                 ),
                 const Icon(Icons.volume_up),
               ],
@@ -397,10 +385,11 @@ class _ConfigViewState extends State<ConfigView> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () { 
-                          Provider.of<RobotProvider>(context, listen: true).removeRobot(widget.robot);
-                          Navigator.pop(context); 
-                        },
+                      onPressed: () {
+                        Provider.of<RobotProvider>(context, listen: true)
+                            .removeRobot(widget.robot);
+                        Navigator.pop(context);
+                      },
                       child: const Text("Entfernen"),
                     ),
                   ),

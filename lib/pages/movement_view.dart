@@ -56,14 +56,45 @@ class MovementViewState extends State<MovementView> {
     bool isMoving = false;
     bool isTajChiEnabled = false;
 
+    void showAlertDialog() {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Wähle einen NAO aus"),
+              content: const Text(
+                  "Damit du den NAO steuern kannst, wähle bitte einen NAO aus"),
+              actions: <Widget>[
+                OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("OK"))
+              ],
+            );
+          });
+    }
+
     Future<void> actionMovement(String movement) async {
       String translatedMovement = translateMovement(movement);
+
+      if (activeRobots.isEmpty) {
+        showAlertDialog();
+        return;
+      }
+
       for (int i = 0; i < activeRobots.length; i++) {
-          activeRobots[i].setPosture(translatedMovement);
-        }
+        activeRobots[i].setPosture(translatedMovement);
+      }
     }
 
     Future<void> toggleTajChi() async {
+      if (activeRobots.isEmpty) {
+        showAlertDialog();
+        return;
+      }
+
       for (int i = 0; i < activeRobots.length; i++) {
         isTajChiEnabled =
             robotProvider.getTajChiState(activeRobots[i].ipAddress);
@@ -75,6 +106,13 @@ class MovementViewState extends State<MovementView> {
     }
 
     Future<void> controlMovement(String direction) async {
+      if (activeRobots.isEmpty && direction != "Stop") {
+        showAlertDialog();
+        return;
+      }
+
+      print(direction);
+
       Map<String, dynamic> moveObject = {
         'enableArmsInWalkAlgorithm': true,
         'xCoordinate': '0',
@@ -99,8 +137,9 @@ class MovementViewState extends State<MovementView> {
       if (!isMoving) {
         isMoving = true;
         for (int i = 0; i < activeRobots.length; i++) {
-            activeRobots[i].move(moveObject);
-          }
+          activeRobots[i].move(moveObject);
+        }
+        isMoving = false;
       }
     }
 
