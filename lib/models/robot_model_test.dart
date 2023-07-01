@@ -302,7 +302,7 @@ class RobotModelTest implements RobotInterface {
     return 0.1;
   }
 
-  Future<double> getBrightness() async {
+  Future<int> getBrightness() async {
 
     /*
     var response = await http.get(url);
@@ -316,10 +316,10 @@ class RobotModelTest implements RobotInterface {
       return 0.5;
     }
     */
-    return 0.7;
+    return 70;
   }
 
-  Future<double> getVolume() async {
+  Future<int> getVolume() async {
 
     /*
     var response = await http.get(url);
@@ -340,7 +340,7 @@ class RobotModelTest implements RobotInterface {
     name = name;
   }
 
-  Future<void> setBrightness(double bri) async {    
+  Future<void> setBrightness(Object bri) async {    
 
   }
 }

@@ -212,7 +212,7 @@ void main() {
 
   testWidgets('Widget Test for volume slider', (widgetTester) async {
     
-    double volumeValue = 0.5;
+    double volumeValue = 50;
 
     void volumeHandler(double value) {
         volumeValue = value;
@@ -299,7 +299,7 @@ class _ConfigViewState extends State<ConfigViewTest> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ipAddressController = TextEditingController();
 
-  double brightnessValue = 0.5;
+  int brightnessValue = 50;
 
   Enum? languageEnum = Enum(
       items: ['German', 'Japanese', 'Chinese', 'English'],
@@ -307,9 +307,6 @@ class _ConfigViewState extends State<ConfigViewTest> {
   Enum? voiceEnum = Enum(
       items: ["Julia22Enhanced", "maki_n16", "naoenu", "naomnc"],
       selectedItem: "Julia22Enhanced");
-
-  //an Frank: Verwende getVoice / getLanguage wie auch immer es dir passt, habe sie aus der SPrachseite entfernt, also
-  //Enum ist nicht notwendig.
 
   int volumeValue = 50;
 
@@ -333,7 +330,7 @@ class _ConfigViewState extends State<ConfigViewTest> {
   Future<void> getBrightness() async {
     setState(() {
       widget.robot.getBrightness().then((value) => {
-        brightnessValue = value
+        brightnessValue = value.toInt()
       });
     });
   }
@@ -377,12 +374,16 @@ class _ConfigViewState extends State<ConfigViewTest> {
     });
   }
 
-  Future<void> brightnessHandler(double bri) async {
+  Future<void> brightnessHandler(int bri) async {
     setState(() {
       brightnessValue = bri;
     });
 
-    widget.robot.setBrightness(bri);
+    Object brightnessObject = {
+        'brightness': bri,
+      };
+
+    widget.robot.setBrightness(brightnessObject);
   }
 
   Future<void> languageHandler(String lng) async {
@@ -536,9 +537,12 @@ class _ConfigViewState extends State<ConfigViewTest> {
                 Expanded(
                   child: Material(
                     child: Slider(
-                        value: brightnessValue,
+                        value: brightnessValue.toDouble(),
+                        min: 0,
+                        max: 100,
+                        divisions: 100,
                         onChanged: (value) {
-                          brightnessHandler(value.toDouble());
+                          volumeHandler(value);
                         }),
                   )
                 ),

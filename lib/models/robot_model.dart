@@ -237,39 +237,38 @@ class RobotModel implements RobotInterface {
     }
   }
 
-  Future<double> getBrightness() async {
+  Future<int> getBrightness() async {
     Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
     var response = await http.get(url);
     
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['brightnesss'].toDouble() / 255.0;
+      return jsonDecode(response.body)['brightnesss'];
     }
     else {
-      return 0.5;
+      return 50;
     }
   }
 
-  Future<double> getVolume() async {
+  Future<int> getVolume() async {
     Uri url = Uri.http('$ipAddress:8080', '/api/audio/volume');
     var response = await http.get(url);
     
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['volume'].toDouble() / 100.0;
+      return jsonDecode(response.body)['volume'];
     }
     else {
-      return 0.5;
+      return 50;
     }
   }
   // Setter
   Future<void> setName(String name) async {
-    name = name;
+    this.name = name;
   }
 
-  Future<void> setBrightness(double bri) async {    
-    int bright = (bri * 255.0).round();
-
+  Future<void> setBrightness(Object brightnessObject) async {    
     Uri url = Uri.http('$ipAddress:8080', '/api/vision/brightness');
     var headers = {"Content-type": "application/json"};
-    await http.post(url, headers:headers, body: '{"brightness": $bright}');
+    var bodyObj = json.encode(brightnessObject);
+    await http.post(url, headers:headers, body: bodyObj);
   }
 }

@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'dart:async';
 import 'package:nao_app/models/robot_model.dart';
 import 'package:nao_app/providers/robot_provider.dart';
 import 'package:nao_app/ui_elements/info_card.dart';
 import 'package:provider/provider.dart';
+
+/*
+void main() {
+  RobotModelTest robot = RobotModelTest(name: "Test", ipAddress: "192.168.171.80");
+
+  runApp(MaterialApp(debugShowCheckedModeBanner: false,
+      title: 'NAO-App',
+      theme: ThemeData(
+        primarySwatch:
+            Colors.deepPurple, //shade 50 cannot be used due to wrong Type
+      ),
+      home: ConfigView(robot: robot)));  
+}
+*/
 
 class ConfigItem extends StatelessWidget {
   const ConfigItem({Key? key, required this.children}) : super(key: key);
@@ -63,7 +76,7 @@ class _ConfigViewState extends State<ConfigView> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ipAddressController = TextEditingController();
 
-  double brightnessValue = 0.5;
+  int brightnessValue = 50;
 
   Enum? languageEnum = Enum(
       items: ['German', 'Japanese', 'Chinese', 'English'],
@@ -158,10 +171,14 @@ class _ConfigViewState extends State<ConfigView> {
 
   Future<void> brightnessHandler(double bri) async {
     setState(() {
-      brightnessValue = bri;
+      brightnessValue = bri.toInt();
     });
-
-    widget.robot.setBrightness(bri);
+    
+    Object brightnessObject = {
+      'brightness': bri,
+    };
+    
+    await widget.robot.setBrightness(brightnessObject);  
   }
 
   Future<void> languageHandler(String lng) async {
@@ -288,9 +305,12 @@ class _ConfigViewState extends State<ConfigView> {
                 const Icon(Icons.lightbulb_outline),
                 Expanded(
                   child: Slider(
-                      value: brightnessValue,
+                      value: brightnessValue.toDouble(),
+                      min: 0,
+                      max: 255,
+                      divisions: 255,
                       onChanged: (value) {
-                        brightnessHandler(value.toDouble());
+                        brightnessHandler(value);
                       }),
                 ),
                 const Icon(Icons.lightbulb),
