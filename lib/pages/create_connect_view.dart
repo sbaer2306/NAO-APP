@@ -201,11 +201,14 @@ class _CreateConnectPageState extends State<CreateConnectPage>
                               setState(() {
                                 _isLoading = false;
                               });
-                              showAlertDialog(success);
                               if (success == 200) {
-                                robotProvider.addRobot(newRobot);
-                                Navigator.pop(context);
+                                if (!robotProvider.addRobot(newRobot)) {
+                                  success = 409;
+                                }
                               }
+
+                              showAlertDialog(success);
+                              Navigator.pop(context);
                             });
                           },
                           child: Row(

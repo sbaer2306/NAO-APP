@@ -14,13 +14,18 @@ class RobotProvider extends ChangeNotifier {
   UnmodifiableListView<RobotModel> get activeItems =>
       UnmodifiableListView(_activeItems);
 
-  void addRobot(RobotModel newRobot) {
-    if(!_items.contains(newRobot)){
-      _items.add(newRobot);
-      toggleStates[newRobot.ipAddress] = false;
-      tajChiStates[newRobot.ipAddress] = false;
-      notifyListeners();  
+  bool addRobot(RobotModel newRobot) {
+    for (int i = 0; i < _items.length; i++) {
+      if (_items[i].ipAddress == newRobot.ipAddress) {
+        return false;
+      }
     }
+
+    _items.add(newRobot);
+    toggleStates[newRobot.ipAddress] = false;
+    tajChiStates[newRobot.ipAddress] = false;
+    notifyListeners();
+    return true;
   }
 
   void addActiveRobot(RobotModel activeRobot) {
