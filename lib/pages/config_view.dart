@@ -149,10 +149,11 @@ class _ConfigViewState extends State<ConfigView> {
   // Setter
   Future<void> nameHandler(String name) async {
     setState(() {
+      widget.robot.setName(name);
       _nameController.text = name;
     });
 
-    widget.robot.setName(name);
+    
   }
 
   Future<void> ipHandler(String ip) async {
@@ -269,7 +270,7 @@ class _ConfigViewState extends State<ConfigView> {
                   controller: _nameController,
                   decoration: const InputDecoration(
                       hintText: "Gib einen Namen für deinen NAO ein"),
-                  onSubmitted: (value) {
+                  onChanged: (value) {
                     nameHandler(value.toString());
                   },
                 ),
@@ -283,9 +284,6 @@ class _ConfigViewState extends State<ConfigView> {
                   decoration:
                       const InputDecoration(hintText: "Gib eine IP ein"),
                   readOnly: true,
-                  onSubmitted: (value) {
-                    ipHandler(value.toString());
-                  },
                 ),
               ),
             ]),
