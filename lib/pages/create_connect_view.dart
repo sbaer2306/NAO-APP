@@ -53,12 +53,10 @@ class _CreateConnectPageState extends State<CreateConnectPage>
         print("hallo");
         isInstalled = await robot.installBackendOnNAO(
             _usernameController.text, _pwController.text);
+        await Future.delayed(const Duration(seconds: 10));    
       }
 
-      if (isInstalled) {
-        await Future.delayed(const Duration(seconds: 10));
-        return robot.connect("9559");
-      }
+      if (isInstalled) return robot.connect("9559");
       return 500;
     }
 

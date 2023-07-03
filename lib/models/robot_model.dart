@@ -243,7 +243,7 @@ class RobotModel implements RobotInterface {
   Future<double> getBattery() async {
     Uri url = Uri.http('$ipAddress:8080', '/api/config/battery');
     var response = await http.get(url);
-
+    
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['battery'].toDouble() / 100.0;
     } else {

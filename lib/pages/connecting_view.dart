@@ -18,7 +18,7 @@ class ConnectView extends StatefulWidget {
 class _ConnectViewState extends State<ConnectView> {
   @override
   Widget build(BuildContext context) {
-    final robotProvider = Provider.of<RobotProvider>(context, listen: false);
+    final robotProvider = Provider.of<RobotProvider>(context, listen: true);
 
     return Scaffold(
       appBar: AppBar(
@@ -93,7 +93,11 @@ class _ConnectViewState extends State<ConnectView> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            ConfigView(robot: robot)));
+                                            ConfigView(robot: robot))).then((result) {
+                                              setState(() {
+                                              });
+                                            }
+                                );
                               },
                             ),
                           ],
