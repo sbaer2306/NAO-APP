@@ -5,20 +5,6 @@ import 'package:nao_app/providers/robot_provider.dart';
 import 'package:nao_app/ui_elements/info_card.dart';
 import 'package:provider/provider.dart';
 
-/*
-void main() {
-  RobotModelTest robot = RobotModelTest(name: "Test", ipAddress: "192.168.171.80");
-
-  runApp(MaterialApp(debugShowCheckedModeBanner: false,
-      title: 'NAO-App',
-      theme: ThemeData(
-        primarySwatch:
-            Colors.deepPurple, //shade 50 cannot be used due to wrong Type
-      ),
-      home: ConfigView(robot: robot)));  
-}
-*/
-
 class ConfigItem extends StatelessWidget {
   const ConfigItem({Key? key, required this.children}) : super(key: key);
 
@@ -76,7 +62,7 @@ class _ConfigViewState extends State<ConfigView> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ipAddressController = TextEditingController();
 
-  int brightnessValue = 50;
+  int brightnessValue = 55;
 
   Enum? languageEnum = Enum(
       items: ['German', 'Japanese', 'Chinese', 'English'],
@@ -96,10 +82,6 @@ class _ConfigViewState extends State<ConfigView> {
       getWifi();
       _nameController.text = widget.robot.name;
       _ipAddressController.text = widget.robot.ipAddress;
-      getBrightness();
-      //getLanguage();
-      //getVoice();
-      getVolume();
     });
   }
 
@@ -122,24 +104,6 @@ class _ConfigViewState extends State<ConfigView> {
     });
   }
 
-  /*
-  Future<void> getLanguage() async {
-    setState(() {
-      widget.robot.getLanguage().then((value) => {
-        languageEnum = value
-    });
-    });
-  }
-
-  Future<void> getVoice() async {
-    setState(() {
-      widget.robot.getVoice().then((value) => {
-        voiceEnum = value
-      });
-    });
-  }
-  */
-
   Future<void> getVolume() async {
     setState(() {
       widget.robot.getVolume().then((value) => {volumeValue = value.toInt()});
@@ -149,8 +113,8 @@ class _ConfigViewState extends State<ConfigView> {
   // Setter
   Future<void> nameHandler(String name) async {
     setState(() {
+      //_nameController.text = name;
       widget.robot.setName(name);
-      _nameController.text = name;
     });
 
     
@@ -212,6 +176,7 @@ class _ConfigViewState extends State<ConfigView> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
         appBar: AppBar(title: const Text("Konfiguration")),
         body: SingleChildScrollView(
@@ -270,7 +235,7 @@ class _ConfigViewState extends State<ConfigView> {
                   controller: _nameController,
                   decoration: const InputDecoration(
                       hintText: "Gib einen Namen für deinen NAO ein"),
-                  onChanged: (value) {
+                  onSubmitted: (value) {
                     nameHandler(value.toString());
                   },
                 ),
@@ -386,7 +351,7 @@ class _ConfigViewState extends State<ConfigView> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Provider.of<RobotProvider>(context, listen: true)
+                        Provider.of<RobotProvider>(context, listen: false)
                             .removeRobot(widget.robot);
                         Navigator.pop(context);
                       },
