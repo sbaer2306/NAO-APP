@@ -226,7 +226,8 @@ class _SpeakerViewState extends State<SpeakerView> {
                   min: 0,
                   max: 100,
                   divisions: 100,
-                  onChanged: (value) {
+                  onChanged: (value) {},
+                  onChangeEnd: (value) {
                     volumeHandler(value);
                   },
                 )),

@@ -297,7 +297,8 @@ class _ConfigViewState extends State<ConfigView> {
                       min: 0,
                       max: 255,
                       divisions: 255,
-                      onChanged: (value) {
+                      onChanged: (value) {},
+                      onChangeEnd: (value) {
                         brightnessHandler(value);
                       }),
                 ),
@@ -367,7 +368,8 @@ class _ConfigViewState extends State<ConfigView> {
                       min: 0,
                       max: 100,
                       divisions: 100,
-                      onChanged: (value) {
+                      onChanged: (value) {},
+                      onChangeEnd: (value) {
                         volumeHandler(value);
                       }),
                 ),

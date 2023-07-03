@@ -27,10 +27,10 @@ class RobotModel implements RobotInterface {
 
   Future<int> connect(String port) async {
     //Test URL
-    var url = Uri.https('httpbin.org', 'post');
+    //var url = Uri.https('httpbin.org', 'post');
 
     //NAO URL
-    //var url = Uri.http('$ipAddress:8080', '/api/connect');
+    var url = Uri.http('$ipAddress:8080', '/api/connect');
 
     final headers = {"Content-type": "application/json"};
     var json = '{"ip_address": "$ipAddress", "port": "$port"}';
@@ -44,6 +44,7 @@ class RobotModel implements RobotInterface {
       });
       return response.statusCode;
     } catch (error) {
+      print(error);
       return 500;
     }
 
@@ -61,6 +62,7 @@ class RobotModel implements RobotInterface {
   }
 
   Future<bool> installBackendOnNAO(String username, String pw) async {
+    print("install");
     // ignore: unnecessary_new
     var client = new SSHClient(
       host: ipAddress,
@@ -75,12 +77,18 @@ class RobotModel implements RobotInterface {
       result = await client.connect() ?? 'Null result';
 
       if (result == "session_connected") {
+        if (kDebugMode) {
+          print("result");
+        }
         await client.execute(
             "wget https://github.com/sbaer2306/NAO-APP-Pythonserver-API/archive/refs/heads/main.zip\n");
         await client.execute("unzip -o main.zip && rm main.zip\n");
         await client.execute("pip install --user nao flask\n");
         await client.execute(
             "PYTHONPATH=/opt/aldebaran/lib/python2.7/site-packages nohup /usr/bin/python2 /data/home/nao/NAO-APP-Pythonserver-API-main/app.py > log.txt 2>&1 &\n");
+        if (kDebugMode) {
+          print("ende");
+        }
       }
       await client.disconnect();
       return true;
@@ -116,19 +124,20 @@ class RobotModel implements RobotInterface {
 
   @override
   Future<void> move(Object moveObject) async {
+    print("move");
     var url = Uri.http('$ipAddress:8080', '/api/move/movement');
     var headers = {"Content-type": "application/json"};
     var body = json.encode(moveObject);
     if (kDebugMode) {
       print("move");
       try {
-        /* var response = await http.post(url, headers: headers, body: body);
+        var response = await http.post(url, headers: headers, body: body);
 
         if (response.statusCode == 200) {
           print('Success: ${json.encode(moveObject)}.');
         } else {
           print('${response.statusCode}: ${response.body}');
-        } */
+        }
       } catch (error) {
         print('Error occurred: $error');
       }
@@ -258,7 +267,7 @@ class RobotModel implements RobotInterface {
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['brightnesss'];
+      return jsonDecode(response.body)['brightness'];
     }
     else {
       return 50;

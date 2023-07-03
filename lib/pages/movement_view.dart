@@ -15,7 +15,6 @@ class MovementViewState extends State<MovementView> {
     'Hinsetzen',
     'Bauchlage',
     'Rückenlage',
-    "Hinknieen",
     'Entspannt hinsetzen',
     'Initialposition',
     'Neutrale Position',
@@ -135,11 +134,15 @@ class MovementViewState extends State<MovementView> {
       }
 
       if (!isMoving) {
-        isMoving = true;
-        for (int i = 0; i < activeRobots.length; i++) {
-          activeRobots[i].move(moveObject);
+        try{
+          isMoving = true;
+          for (int i = 0; i < activeRobots.length; i++) {
+            activeRobots[i].move(moveObject);
+          }
+        }catch(error){}
+        finally{
+          isMoving = false;
         }
-        isMoving = false;
       }
     }
 
