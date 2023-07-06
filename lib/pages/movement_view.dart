@@ -110,8 +110,6 @@ class MovementViewState extends State<MovementView> {
         return;
       }
 
-      print(direction);
-
       Map<String, dynamic> moveObject = {
         'enableArmsInWalkAlgorithm': true,
         'xCoordinate': '0',

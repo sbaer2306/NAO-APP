@@ -26,9 +26,6 @@ class RobotModel implements RobotInterface {
       this.language = ""});
 
   Future<int> connect(String port) async {
-    //Test URL
-    //var url = Uri.https('httpbin.org', 'post');
-
     //NAO URL
     var url = Uri.http('$ipAddress:8080', '/api/connect');
 
@@ -44,25 +41,11 @@ class RobotModel implements RobotInterface {
       });
       return response.statusCode;
     } catch (error) {
-      print(error);
       return 500;
     }
-
-    //TEST response
-/*     try {
-      final response = await http.post(url, body: {'name': 'test'}).timeout(
-          const Duration(seconds: 10), onTimeout: () {
-        return http.Response('statusCode', 408);
-      });
-
-      return response.statusCode;
-    } catch (error) {
-      return 500;
-    } */
   }
 
   Future<bool> installBackendOnNAO(String username, String pw) async {
-    print("install");
     // ignore: unnecessary_new
     var client = new SSHClient(
       host: ipAddress,
@@ -124,12 +107,10 @@ class RobotModel implements RobotInterface {
 
   @override
   Future<void> move(Object moveObject) async {
-    print("move");
     var url = Uri.http('$ipAddress:8080', '/api/move/movement');
     var headers = {"Content-type": "application/json"};
     var body = json.encode(moveObject);
     if (kDebugMode) {
-      print("move");
       try {
         var response = await http.post(url, headers: headers, body: body);
 
@@ -155,7 +136,6 @@ class RobotModel implements RobotInterface {
   Future<void> handleTajChi(bool isTajChiEnabled) async {
     var headers = {"Content-type": "application/json"};
     Uri url;
-    print("tajchi");
     if (isTajChiEnabled) {
       url = Uri.http('$ipAddress:8080', '/api/behavior/stop_taj_chi');
     } else {
